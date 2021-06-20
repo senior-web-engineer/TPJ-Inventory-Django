@@ -20,7 +20,9 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/theme.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
 
 </head>
 
@@ -28,7 +30,11 @@
 
     <div class="d-flex flex-column flex-lg-row justify-content-lg-center min-vh-100">
 
-        <div class="col-lg-5 bg-login-image" style="min-height: 50vh;"></div>
+        <div class="col-lg-5 bg-login-image position-relative d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+            <div class="overlay"></div>
+            <h1 class="right-desc">The Imperfect Inventory App for The Perfect Jean</h1>
+            <h5 class="copyright">©Copyright 2021, Made by Perceptively.com</h5>
+        </div>
         <div class="col-lg-7">
             {% block content %}
             {% endblock %}

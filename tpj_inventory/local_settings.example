@@ -1,3 +1,13 @@
+from pathlib import Path
+import os
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DEBUG = True
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]

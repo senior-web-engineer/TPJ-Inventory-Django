@@ -9,7 +9,7 @@
 {% block content %}
 <div class="px-2 py-3 px-lg-5 py-lg-4">
     <div class="mt-lg-5 p-lg-5">
-        <h1 class="h4 text-gray-900 mb-4 font-weight-bold text-center text-lg-left">{% trans "Confirm E-mail Address" %}</h1>
+        <h1 class="heading-section__heading title">{% trans "Confirm E-mail Address" %}</h1>
         <form action="{% url 'account_confirm_email' confirmation.key %}" method="post" class="user">
             {% csrf_token %}
             <div class="row">

@@ -11267,23 +11267,3 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
-
-
-.sidebar .nav-item .nav-link {
-  color: grey;
-}
-
-.sidebar .nav-item.active .nav-link {
-  color: #E8264F;
-}
-
-.sidebar .nav-item.active .nav-link:after {
-  width: 1rem;
-  text-align: center;
-  float: right;
-  vertical-align: 0;
-  border: 0;
-  font-weight: 900;
-  content: '\f105';
-  font-family: 'Font Awesome 5 Free';
-}

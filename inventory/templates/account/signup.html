@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="mt-lg-5 p-lg-5">
-        <h1 class="h4 text-gray-900 mb-4 font-weight-bold text-center text-lg-left">Sign Up</h1>
+        <h1 class="heading-section__heading title">Sign Up</h1>
         <form action="{% url 'account_signup' %}" method="post" class="user">
             {% csrf_token %}
             {% if redirect_field_value %}
