@@ -82,10 +82,9 @@ def shopify_orders_data(request):
     resource = "orders"
 
     last=0
-    orders=pd.DataFrame()
     data = []
     while True:
-        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=1&fulfillment_status=shipped&fields=id,processed_at,line_items&since_id={last}"
+        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=250&fulfillment_status=shipped&fields=id,processed_at,line_items&since_id={last}"
         response = requests.request("GET", url)
 
         result = response.json()['orders']
@@ -99,5 +98,6 @@ def shopify_orders_data(request):
         if len(result) < 250:
             break
 
-    print(orders.to_json())
-    return JsonResponse(data, safe=False)
+    df = pd.DataFrame(data)
+    df.to_excel('staticfiles/export.xlsx', index=False, header=True)
+    return JsonResponse(len(data), safe=False)
