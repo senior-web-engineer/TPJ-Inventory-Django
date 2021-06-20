@@ -1,0 +1,1 @@
+web: gunicorn tpj_inventory.wsgi 
