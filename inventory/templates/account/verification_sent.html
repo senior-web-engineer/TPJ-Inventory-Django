@@ -1,0 +1,26 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% load static %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="px-2 py-3 px-lg-5 py-lg-4">
+    <div class="mt-lg-5 p-lg-5">
+        <h1 class="h4 text-gray-900 mb-4 font-weight-bold text-center text-lg-left">{% trans "Verify Your email Address" %}</h1>
+        <div class="row">
+            <div class="col-lg-8">
+
+                <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+
+            </div>
+        </div>
+    </div>
+    <div class="text-center d-lg-none mt-3">
+        New user?
+        <a class="small text-danger" href="{{ signup_url }}">Create an account</a>
+    </div>
+</div>
+{% endblock %}

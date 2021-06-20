@@ -1,0 +1,32 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% load static %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="px-2 py-3 px-lg-5 py-lg-4">
+    <div class="mt-lg-5 p-lg-5">
+        <h1 class="h4 text-gray-900 mb-4 font-weight-bold text-center text-lg-left">{% trans "Confirm E-mail Address" %}</h1>
+        <form action="{% url 'account_confirm_email' confirmation.key %}" method="post" class="user">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-8">
+                    <div>
+                        {% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-user btn-block mt-4">
+                        {% trans 'Confirm' %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="text-center d-lg-none mt-3">
+        New user?
+        <a class="small text-danger" href="{{ signup_url }}">Create an account</a>
+    </div>
+</div>
+{% endblock %}

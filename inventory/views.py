@@ -1,22 +1,28 @@
 import requests
 import json
 
+import pandas as pd
+
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import JsonResponse, HttpResponse
-import pandas as pd
+
+from allauth.account.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 # import numpy as np
 # import re
 
-
-class GetToken(TemplateView):
+class GetToken(LoginRequiredMixin, TemplateView):
     template_name = 'base.html'
 
 
+@login_required
 def get_token(request):
     pass
 
 
+@login_required
 def get_data(request):
     create_callback()
 
@@ -37,6 +43,7 @@ def get_data(request):
     return JsonResponse(response.json())
 
 
+@login_required
 def snapshot_ready(request):
     json_data = json.loads(request.body.decode("utf-8"))
     print(json_data)
@@ -54,6 +61,7 @@ def snapshot_ready(request):
     return HttpResponse('')
 
 
+@login_required
 def create_callback():
     url = "https://sandbox.masonhub.co/theperfectjean/api/v1/callbacks"
 
@@ -74,6 +82,7 @@ def create_callback():
     print(response.text)
 
 
+@login_required
 def shopify_orders_data(request):
     API_KEY = '91dd237119c46f9fcba63327d9a1ed48'
     PASSWORD = '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'
@@ -84,7 +93,7 @@ def shopify_orders_data(request):
     last=0
     data = []
     while True:
-        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=250&fulfillment_status=shipped&fields=id,processed_at,line_items&since_id={last}"
+        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=1&fulfillment_status=shipped&since_id={last}"
         response = requests.request("GET", url)
 
         result = response.json()['orders']
@@ -100,4 +109,4 @@ def shopify_orders_data(request):
 
     df = pd.DataFrame(data)
     df.to_excel('staticfiles/export.xlsx', index=False, header=True)
-    return JsonResponse(len(data), safe=False)
+    return JsonResponse(data, safe=False)
