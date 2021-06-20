@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yr3msgn@=fy-14z4*z-d3yd*izj_qeii#ne_23x3ks@7c3sxsn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['tpj-inventory.herokuapp.com']
 
@@ -142,6 +142,7 @@ USE_TZ = True
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+STATICFILES_DIRS = (os.path.join(BASE_DIR, '../staticfiles'),)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -167,3 +168,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 import django_heroku
 django_heroku.settings(locals())
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
