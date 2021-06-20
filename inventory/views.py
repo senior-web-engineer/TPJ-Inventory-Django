@@ -72,3 +72,32 @@ def create_callback():
     response = requests.request("POST", url, headers=headers, json=payload)
 
     print(response.text)
+
+
+def shopify_orders_data(request):
+    API_KEY = '91dd237119c46f9fcba63327d9a1ed48'
+    PASSWORD = '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'
+    SHOP_NAME = 'theperfectjean.myshopify.com'
+    VERSION = "2021-04"
+    resource = "orders"
+
+    last=0
+    orders=pd.DataFrame()
+    data = []
+    while True:
+        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=1&fulfillment_status=shipped&fields=id,processed_at,line_items&since_id={last}"
+        response = requests.request("GET", url)
+
+        result = response.json()['orders']
+        data = data + result
+        last = result[-1]['id']
+
+        # df=pd.DataFrame(response.json()['orders'])
+        # orders=pd.concat([orders, df])
+        # last=df['id'].iloc[-1]
+        # if len(df) < 250:
+        if len(result) < 250:
+            break
+
+    print(orders.to_json())
+    return JsonResponse(data, safe=False)
