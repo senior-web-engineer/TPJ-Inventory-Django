@@ -20,11 +20,12 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
 
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/theme.css' %}" rel="stylesheet">
-    <link href="{% static 'css/custom.css' %}?version=20210621" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}?version=2021062102" rel="stylesheet">
 
 </head>
 
@@ -37,7 +38,7 @@
         <ul class="navbar-nav sidebar accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-none d-md-flex align-items-center justify-content-center mb-4" href="/">
+            <a class="sidebar-brand d-none d-md-flex align-items-center justify-content-center my-5" href="/">
                 <img src="{% static 'img/logo.png' %}" width="220" />
             </a>
 
@@ -49,34 +50,50 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="/">
-                    <i class="fas fa-fw fa-shopping-cart"></i>
-                    <span>E-Commerce</span>
+                <a class="nav-link" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g id="cart"><path d="M45.71,80.13a6.09,6.09,0,1,0,6.09,6.09A6.09,6.09,0,0,0,45.71,80.13Z"></path><path d="M73,80.13a6.09,6.09,0,1,0,6.09,6.09A6.09,6.09,0,0,0,73,80.13Z"></path><path d="M93.8,24.8a8.16,8.16,0,0,0-8-9.94H28.71L27.26,7.7H6v8H20.72l12.1,59.65H88.24v-8H39.36L38.2,61.64H85.55Z"></path></g></svg>
+                    <span>Catalog</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="/">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-check-square"></i>
-                    <span>Report</span>
+                    <span>Replenishment</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="/">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-chart-line"></i>
                     <span>Analytics</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="/">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Settings</span>
                 </a>
             </li>
 
-            <li class="nav-item" style="position: absolute; bottom: 0;">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-fw fa-sync"></i>
+                    <span>Sync</span>
+                </a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav sidebar accordion" style="position: absolute; bottom: 0; min-height: auto; height: auto;">
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="sidebarToggleTop">
+                    <i class="fa fa-fw fa-bars"></i>
+                    <span>Collapse Menu</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'account_logout' %}">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Logout</span>
@@ -101,11 +118,30 @@
                 </nav>
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid mt-5">
+                <div class="main-container">
 
                     <!-- Page Heading -->
-                    <h1 class="heading-section__heading title">My Dashboard</h1>
-                    <h5>Welcome back, nice to see you again!</h5>
+                    <div class="page-header py-5 mt-2 d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 class="main-title">My Dashboard</h1>
+                            <h5 class="sub-title">Welcome back, nice to see you again!</h5>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="input-group align-items-center bg-white" style="border-radius: 20px;">
+                                <div class="input-group-prepend pl-3 py-2 text-gray-600">
+                                    <i class="fas fa-lg fa-search"></i>
+                                </div>
+                                <input type="text" class="form-control bg-light border-0 small bg-transparent" placeholder="Search..."
+                                    aria-label="Search" aria-describedby="basic-addon2" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px; box-shadow: none; width: 300px;">
+                            </div>
+                            <a class="nav-link ml-5 p-0 text-gray-600 position-relative" href="#" role="button">
+                                {% comment %} <i class="fi-rr-bell"></i> {% endcomment %}
+                                <i class="far fa-bell fa-2x"></i>
+                                <span class="badge badge-pill badge-danger position-absolute d-block" style="padding: 5px; top: 0; right: 0;"></span>
+                                <!-- Counter - Alerts -->
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.container-fluid -->
 
