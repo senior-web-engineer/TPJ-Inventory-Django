@@ -10,51 +10,53 @@
 <div class="px-2 py-3 px-lg-5 py-lg-4">
     <div class="justify-content-between align-items-center d-none d-lg-flex">
         <img src="{% static 'img/logo.png' %}" width="220" />
-        <div>
-            New user?
-            <a class="small text-danger" href="{{ signup_url }}">Create an account</a>
+        <div class="mr-5">
+            New user? 
+            <a class="text-danger ml-1" href="{{ signup_url }}">Create an account</a>
         </div>
     </div>
-    <div class="mt-lg-5 p-lg-5">
-        <h1 class="heading-section__heading title">Sign In</h1>
-        <form action="{% url 'account_login' %}" method="post" class="user">
-            {% csrf_token %}
-            {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-            {% endif %}
-            <div class="row">
-                <div class="form-group col-lg-6">
-                    <label for="id_login">Your email</label>
-                    <input type="email" class="form-control form-control-user"
-                        id="id_login" name="login" aria-describedby="emailHelp"
-                        placeholder="Enter Email Address...">
+    <div class="mt-lg-5 py-lg-5 d-flex justify-content-center">
+        <div class="login-form-container">
+            <h1 class="heading-section__heading title mb-4">Sign In</h1>
+            <form action="{% url 'account_login' %}" method="post" class="user">
+                {% csrf_token %}
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <div class="row mb-2">
+                    <div class="form-group col-lg-6">
+                        <label for="id_login">Your email</label>
+                        <input type="email" class="form-control form-control-user"
+                            id="id_login" name="login" aria-describedby="emailHelp"
+                            placeholder="Enter Email Address...">
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="id_password">Password</label>
+                        <input type="password" class="form-control form-control-user"
+                            id="id_password" name="password" placeholder="Password">
+                    </div>
                 </div>
-                <div class="form-group col-lg-6">
-                    <label for="id_password">Password</label>
-                    <input type="password" class="form-control form-control-user"
-                        id="id_password" name="password" placeholder="Password">
+                <div class="form-group d-flex align-items-center justify-content-between justify-content-lg-start mb-4">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="customCheck">
+                        <label class="custom-control-label" for="customCheck">Remember
+                            Me</label>
+                    </div>
+                    <a class="ml-lg-5" href="{% url 'account_reset_password' %}">Forgot Password?</a>
                 </div>
-            </div>
-            <div class="form-group d-flex align-items-center justify-content-between justify-content-lg-start">
-                <div class="custom-control custom-checkbox small">
-                    <input type="checkbox" class="custom-control-input" id="customCheck">
-                    <label class="custom-control-label" for="customCheck">Remember
-                        Me</label>
+                <div class="row pt-3">
+                    <div class="col-lg-6">
+                        <button type="submit" class="btn btn-danger btn-user btn-block">
+                            SIGN IN
+                        </button>
+                    </div>
                 </div>
-                <a class="small ml-lg-5" href="{% url 'account_reset_password' %}">Forgot Password?</a>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <button type="submit" class="btn btn-danger btn-user btn-block">
-                        SIGN IN
-                    </button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
     <div class="text-center d-lg-none mt-3">
         New user?
-        <a class="small text-danger" href="{{ signup_url }}">Create an account</a>
+        <a class="text-danger" href="{{ signup_url }}">Create an account</a>
     </div>
 </div>
 {% endblock %}

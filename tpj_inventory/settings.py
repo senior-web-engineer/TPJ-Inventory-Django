@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yr3msgn@=fy-14z4*z-d3yd*izj_qeii#ne_23x3ks@7c3sxsn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['tpj-inventory.herokuapp.com']
 

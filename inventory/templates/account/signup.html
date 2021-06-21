@@ -10,76 +10,78 @@
 <div class="px-2 py-3 px-lg-5 py-lg-4">
     <div class="justify-content-between align-items-center d-none d-lg-flex">
         <img src="{% static 'img/logo.png' %}" width="220" />
-        <div>
-            Have an account?
-            <a class="small text-danger" href="{{ login_url }}">Sign in</a>
+        <div class="mr-5">
+            Have an account? 
+            <a class="text-danger ml-1" href="{{ login_url }}">Sign in</a>
         </div>
     </div>
-    <div class="mt-lg-5 p-lg-5">
-        <h1 class="heading-section__heading title">Sign Up</h1>
-        <form action="{% url 'account_signup' %}" method="post" class="user">
-            {% csrf_token %}
-            {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-            {% endif %}
-            <div class="row">
-                <div class="form-group col-lg-6">
-                    <label for="id_first_name">First name</label>
-                    <input type="text" class="form-control form-control-user"
-                        id="id_first_name" name="first_name"
-                        placeholder="First name">
+    <div class="mt-lg-5 py-lg-5 d-flex justify-content-center">
+        <div class="login-form-container">
+            <h1 class="heading-section__heading title mb-4">Sign Up</h1>
+            <form action="{% url 'account_signup' %}" method="post" class="user">
+                {% csrf_token %}
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="id_first_name">First name</label>
+                        <input type="text" class="form-control form-control-user"
+                            id="id_first_name" name="first_name"
+                            placeholder="First name">
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="id_last_name">Last name</label>
+                        <input type="text" class="form-control form-control-user"
+                            id="id_last_name" name="last_name" placeholder="Last name">
+                    </div>
                 </div>
-                <div class="form-group col-lg-6">
-                    <label for="id_last_name">Last name</label>
-                    <input type="text" class="form-control form-control-user"
-                        id="id_last_name" name="last_name" placeholder="Last name">
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="id_email">Your email</label>
+                        <input type="email" class="form-control form-control-user"
+                            id="id_email" name="email" aria-describedby="emailHelp"
+                            placeholder="Enter Email Address...">
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="id_username">User Name</label>
+                        <input type="text" class="form-control form-control-user"
+                            id="id_username" name="username" placeholder="Username">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-6">
-                    <label for="id_email">Your email</label>
-                    <input type="email" class="form-control form-control-user"
-                        id="id_email" name="email" aria-describedby="emailHelp"
-                        placeholder="Enter Email Address...">
+                <div class="row mb-2">
+                    <div class="form-group col-lg-6">
+                        <label for="id_password1">Password</label>
+                        <input type="password" class="form-control form-control-user"
+                            id="id_password1" name="password1" placeholder="Password">
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="id_password2">Password (again)</label>
+                        <input type="password" class="form-control form-control-user"
+                            id="id_password2" name="password2" placeholder="Password">
+                    </div>
                 </div>
-                <div class="form-group col-lg-6">
-                    <label for="id_username">User name</label>
-                    <input type="text" class="form-control form-control-user"
-                        id="id_username" name="username" placeholder="Username">
+                <div class="form-group d-flex align-items-center justify-content-between justify-content-lg-start mb-4">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="customCheck">
+                        <label class="custom-control-label" for="customCheck">
+                            I accept the <span class="text-danger">Terms and Conditions</span>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-6">
-                    <label for="id_password1">Password</label>
-                    <input type="password" class="form-control form-control-user"
-                        id="id_password1" name="password1" placeholder="Password">
+                <div class="row pt-3">
+                    <div class="col-lg-6">
+                        <button type="submit" class="btn btn-danger btn-user btn-block">
+                            SIGN UP
+                        </button>
+                    </div>
                 </div>
-                <div class="form-group col-lg-6">
-                    <label for="id_password2">Password (again)</label>
-                    <input type="password" class="form-control form-control-user"
-                        id="id_password2" name="password2" placeholder="Password">
-                </div>
-            </div>
-            <div class="form-group d-flex align-items-center justify-content-between justify-content-lg-start">
-                <div class="custom-control custom-checkbox small">
-                    <input type="checkbox" class="custom-control-input" id="customCheck">
-                    <label class="custom-control-label" for="customCheck">
-                        I accept the <span class="text-danger">Terms and Conditions</span>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <button type="submit" class="btn btn-danger btn-user btn-block">
-                        SIGN UP
-                    </button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
     <div class="text-center d-lg-none mt-3">
         Have an account?
-        <a class="small text-danger" href="{{ login_url }}">Sign in</a>
+        <a class="text-danger" href="{{ login_url }}">Sign in</a>
     </div>
 </div>
 {% endblock %}
