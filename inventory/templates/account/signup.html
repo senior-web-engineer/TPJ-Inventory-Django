@@ -12,7 +12,7 @@
         <img src="{% static 'img/logo.png' %}" width="220" />
         <div class="mr-5">
             Have an account? 
-            <a class="text-danger ml-1" href="{{ login_url }}">Sign in</a>
+            <a class="text-danger ml-1" href="{% url 'account_login' %}">Sign in</a>
         </div>
     </div>
     <div class="mt-lg-5 py-lg-5 d-flex justify-content-center">
@@ -23,42 +23,63 @@
                 {% if redirect_field_value %}
                     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                 {% endif %}
+                {% if form.non_field_errors %}
+                <div class="invalid-feedback d-block mb-3">{{ form.non_field_errors.0 }}</div>
+                {% endif %}
                 <div class="row">
                     <div class="form-group col-lg-6">
                         <label for="id_first_name">First name</label>
-                        <input type="text" class="form-control form-control-user"
+                        <input type="text" class="form-control form-control-user {% if form.errors.first_name %}is-invalid{% endif %}"
                             id="id_first_name" name="first_name"
-                            placeholder="First name">
+                            placeholder="First name" value="{% firstof form.first_name.value %}">
+                        {% if form.errors.first_name %}
+                        <div class="invalid-feedback">{{ form.errors.first_name.0 }}</div>
+                        {% endif %}
                     </div>
                     <div class="form-group col-lg-6">
                         <label for="id_last_name">Last name</label>
-                        <input type="text" class="form-control form-control-user"
-                            id="id_last_name" name="last_name" placeholder="Last name">
+                        <input type="text" class="form-control form-control-user {% if form.errors.last_name %}is-invalid{% endif %}"
+                            id="id_last_name" name="last_name" placeholder="Last name" value="{% firstof form.last_name.value %}">
+                        {% if form.errors.last_name %}
+                        <div class="invalid-feedback">{{ form.errors.last_name.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-lg-6">
                         <label for="id_email">Your email</label>
-                        <input type="email" class="form-control form-control-user"
+                        <input type="email" class="form-control form-control-user {% if form.errors.email %}is-invalid{% endif %}"
                             id="id_email" name="email" aria-describedby="emailHelp"
-                            placeholder="Enter Email Address...">
+                            placeholder="Enter Email Address..." value="{% firstof form.email.value %}">
+                        {% if form.errors.email %}
+                        <div class="invalid-feedback">{{ form.errors.email.0 }}</div>
+                        {% endif %}
                     </div>
                     <div class="form-group col-lg-6">
                         <label for="id_username">User Name</label>
-                        <input type="text" class="form-control form-control-user"
-                            id="id_username" name="username" placeholder="Username">
+                        <input type="text" class="form-control form-control-user {% if form.errors.username %}is-invalid{% endif %}"
+                            id="id_username" name="username" placeholder="Username" value="{% firstof form.username.value %}">
+                        {% if form.errors.username %}
+                        <div class="invalid-feedback">{{ form.errors.username.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row mb-2">
                     <div class="form-group col-lg-6">
                         <label for="id_password1">Password</label>
-                        <input type="password" class="form-control form-control-user"
-                            id="id_password1" name="password1" placeholder="Password">
+                        <input type="password" class="form-control form-control-user {% if form.errors.password1 %}is-invalid{% endif %}"
+                            id="id_password1" name="password1" placeholder="Password" value="{% firstof form.password1.value %}">
+                        {% if form.errors.password1 %}
+                        <div class="invalid-feedback">{{ form.errors.password1.0 }}</div>
+                        {% endif %}
                     </div>
                     <div class="form-group col-lg-6">
                         <label for="id_password2">Password (again)</label>
-                        <input type="password" class="form-control form-control-user"
-                            id="id_password2" name="password2" placeholder="Password">
+                        <input type="password" class="form-control form-control-user {% if form.errors.password2 %}is-invalid{% endif %}"
+                            id="id_password2" name="password2" placeholder="Password" value="{% firstof form.password2.value %}">
+                        {% if form.errors.password2 %}
+                        <div class="invalid-feedback">{{ form.errors.password2.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-between justify-content-lg-start mb-4">
@@ -81,7 +102,7 @@
     </div>
     <div class="text-center d-lg-none mt-3">
         Have an account?
-        <a class="text-danger" href="{{ login_url }}">Sign in</a>
+        <a class="text-danger" href="{% url 'account_login' %}">Sign in</a>
     </div>
 </div>
 {% endblock %}
