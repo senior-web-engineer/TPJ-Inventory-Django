@@ -53,18 +53,18 @@ def get_token(request):
     pass
 
 
-@login_required
+# @login_required
 def get_data(request):
     create_callback()
 
-    url = "https://sandbox.masonhub.co/theperfectjean/api/v1/snapshot_request"
+    url = "https://app.masonhub.co/theperfectjean/api/v1/snapshot_request"
 
     payload = {
         "snapshot_type": "full",
         "snapshot_as_of_date": "2021-08-05T08:15:30-07:00"
     }
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoibW92ZW1lbnQgdGhhdCB5b3VyIG1hbiBwYXJ0cyByZXF1aXJlIiwic3lzdGVtX2lkIjpudWxsLCJleHAiOjQ3NzYzMzk4MjIsImlhdCI6MTYyMjczOTgyMiwiaXNzIjoiTWFzb25IdWIifQ.OiqFs9cYzd_dtCYNO0cvjAxPpaBz7CtKfJgyLtWr4_s',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc',
         'Content-Type': 'application/json',
     }
 
@@ -74,7 +74,7 @@ def get_data(request):
     return JsonResponse(response.json())
 
 
-@login_required
+# @login_required
 def snapshot_ready(request):
     json_data = json.loads(request.body.decode("utf-8"))
     print(json_data)
@@ -82,7 +82,7 @@ def snapshot_ready(request):
     print(download_url)
 
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoibW92ZW1lbnQgdGhhdCB5b3VyIG1hbiBwYXJ0cyByZXF1aXJlIiwic3lzdGVtX2lkIjpudWxsLCJleHAiOjQ3NzYzMzk4MjIsImlhdCI6MTYyMjczOTgyMiwiaXNzIjoiTWFzb25IdWIifQ.OiqFs9cYzd_dtCYNO0cvjAxPpaBz7CtKfJgyLtWr4_s',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc',
         'Content-Type': 'application/json',
     }
 
@@ -92,9 +92,9 @@ def snapshot_ready(request):
     return HttpResponse('')
 
 
-@login_required
+# @login_required
 def create_callback():
-    url = "https://sandbox.masonhub.co/theperfectjean/api/v1/callbacks"
+    url = "https://app.masonhub.co/theperfectjean/api/v1/callbacks"
 
     payload = [
         {
@@ -104,13 +104,15 @@ def create_callback():
         }
     ]
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoibW92ZW1lbnQgdGhhdCB5b3VyIG1hbiBwYXJ0cyByZXF1aXJlIiwic3lzdGVtX2lkIjpudWxsLCJleHAiOjQ3NzYzMzk4MjIsImlhdCI6MTYyMjczOTgyMiwiaXNzIjoiTWFzb25IdWIifQ.OiqFs9cYzd_dtCYNO0cvjAxPpaBz7CtKfJgyLtWr4_s',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc',
         'Content-Type': 'application/json',
     }
 
     response = requests.request("POST", url, headers=headers, json=payload)
 
     print(response.text)
+
+    return
 
 
 @login_required
@@ -124,7 +126,7 @@ def shopify_orders_data(request):
     last=0
     data = []
     while True:
-        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=1&fulfillment_status=shipped&since_id={last}"
+        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=250&fulfillment_status=shipped&since_id={last}"
         response = requests.request("GET", url)
 
         result = response.json()['orders']
