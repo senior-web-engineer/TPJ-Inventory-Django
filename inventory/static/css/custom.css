@@ -164,12 +164,17 @@ html {
 
 #sku-list {
   font-size: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 #sku-list thead th {
   white-space: nowrap;
   color: #6f738a;
   padding: 1rem;
+  position: sticky;
+  top: 0;
+  background: white;
 }
 
 #sku-list tbody td {

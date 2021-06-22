@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import DashboardView, CatalogView, get_data, snapshot_ready, shopify_orders_data
+from .views import DashboardView, CatalogView, get_data, snapshot_ready, shopify_orders_data, \
+    import_csv
 
 urlpatterns = [
     path('', DashboardView.as_view(), name="dashboard"),
@@ -7,4 +8,5 @@ urlpatterns = [
     path('order_data/', shopify_orders_data),
     path('snapshotReady/', snapshot_ready),
     path('snapshot_ready/', snapshot_ready),
+    path('import_csv/', import_csv),
 ]

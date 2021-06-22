@@ -1,5 +1,8 @@
 import requests
 import json
+import csv
+import os
+from pathlib import Path
 
 import pandas as pd
 
@@ -9,6 +12,7 @@ from django.http import JsonResponse, HttpResponse
 
 from allauth.account.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 # import numpy as np
 # import re
@@ -19,6 +23,29 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 class CatalogView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        BASE_DIR = Path(__file__).resolve().parent.parent
+        url = f"{os.path.join(BASE_DIR, 'staticfiles')}/skus(masonhub).csv"
+        df = pd.read_csv(url)
+        data = json.loads(df.to_json(orient='records'))
+
+        for row in data:
+            if row['sales_last_4_weeks'] == '<nil>':
+                row['average_week'] = 0
+            else:
+                row['average_week'] = int(row['sales_last_4_weeks']) / 4
+            
+            if row['average_week']:
+                row['weeks_available'] = round(int(row['current_available']) / row['average_week'])
+            else:
+                row['weeks_available'] = '∞'
+
+        context['data'] = data
+
+        return self.render_to_response(context)
 
 
 @login_required
@@ -113,4 +140,19 @@ def shopify_orders_data(request):
 
     df = pd.DataFrame(data)
     df.to_excel('staticfiles/export.xlsx', index=False, header=True)
+    return JsonResponse(data, safe=False)
+
+
+@login_required
+def import_csv(request):
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+    url = f"{os.path.join(BASE_DIR, 'staticfiles')}/skus(masonhub).csv"
+    df = pd.read_csv(url)
+
+    data = json.loads(df.to_json(orient='records'))
+
+    # for row in data:
+    #     pass
+
     return JsonResponse(data, safe=False)
