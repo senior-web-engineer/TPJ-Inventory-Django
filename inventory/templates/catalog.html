@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% block custom_css %}
+    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block head_title %}{% trans "Catalog" %}{% endblock %}
+
+{% block page_main_title %}{% trans "Catalog" %}{% endblock %}
+
+{% block content %}
+<div class="table-responsive sku-table-wrapper">
+    <table id="sku-list" class="table">
+        <thead>
+            <tr>
+                <th>Sku</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Style</th>
+                <th>Color</th>
+                <th>Inseam</th>
+                <th>Size</th>
+                <th>Available</th>
+                <th>Week avail.</th>
+                <th>Current Status</th>
+                <th>Replenishment</th>
+                <th>ETA</th>
+                <th>Future WA.</th>
+                <th>Future Status</th>
+                <th>Repl. 2</th>
+                <th>ETA 2</th>
+                <th>Future Status</th>
+                <th>Sales Last Wk.</th>
+                <th>Sales Last 52Wk.</th>
+                <th>Sales Best Week</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>JU99T1NKNT32-34</td>
+                <td>Slim / Knight</td>
+                <td>Jean</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>500</td>
+                <td>2</td>
+                <td>Runing out</td>
+                <td>500</td>
+                <td>Jun 20</td>
+                <td>4</td>
+                <td>Underbought</td>
+                <td>10,000</td>
+                <td>Jul 20</td>
+                <td>Underbought</td>
+                <td>25</td>
+                <td>3,725</td>
+                <td>45</td>
+            </tr>
+            <tr>
+                <td>JU99T1NKNT32-34</td>
+                <td>Slim / Knight</td>
+                <td>Jean</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>500</td>
+                <td>2</td>
+                <td>Runing out</td>
+                <td>500</td>
+                <td>Jun 20</td>
+                <td>4</td>
+                <td>Underbought</td>
+                <td>10,000</td>
+                <td>Jul 20</td>
+                <td>Underbought</td>
+                <td>25</td>
+                <td>3,725</td>
+                <td>45</td>
+            </tr>
+            <tr>
+                <td>JU99T1NKNT32-34</td>
+                <td>Slim / Knight</td>
+                <td>Jean</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>500</td>
+                <td>2</td>
+                <td>Runing out</td>
+                <td>500</td>
+                <td>Jun 20</td>
+                <td>4</td>
+                <td>Underbought</td>
+                <td>10,000</td>
+                <td>Jul 20</td>
+                <td>Underbought</td>
+                <td>25</td>
+                <td>3,725</td>
+                <td>45</td>
+            </tr>
+            <tr>
+                <td>JU99T1NKNT32-34</td>
+                <td>Slim / Knight</td>
+                <td>Jean</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>500</td>
+                <td>2</td>
+                <td>Runing out</td>
+                <td>500</td>
+                <td>Jun 20</td>
+                <td>4</td>
+                <td>Underbought</td>
+                <td>10,000</td>
+                <td>Jul 20</td>
+                <td>Underbought</td>
+                <td>25</td>
+                <td>3,725</td>
+                <td>45</td>
+            </tr>
+            <tr>
+                <td>JU99T1NKNT32-34</td>
+                <td>Slim / Knight</td>
+                <td>Jean</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>500</td>
+                <td>2</td>
+                <td>Runing out</td>
+                <td>500</td>
+                <td>Jun 20</td>
+                <td>4</td>
+                <td>Underbought</td>
+                <td>10,000</td>
+                <td>Jul 20</td>
+                <td>Underbought</td>
+                <td>25</td>
+                <td>3,725</td>
+                <td>45</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block custom_js %}
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <script>
+        $(function () {
+            //$('#sku-list').DataTable();
+        });
+    </script>
+{% endblock %}

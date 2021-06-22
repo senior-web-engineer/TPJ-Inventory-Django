@@ -25,6 +25,9 @@
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/theme.css' %}" rel="stylesheet">
+
+    {% block custom_css %}{% endblock %}
+
     <link href="{% static 'css/custom.css' %}?version=2021062102" rel="stylesheet">
 
 </head>
@@ -35,22 +38,22 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav sidebar accordion" id="accordionSidebar">
+        <ul class="navbar-nav sidebar accordion">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-none d-md-flex align-items-center justify-content-center my-5" href="/">
                 <img src="{% static 'img/logo.png' %}" width="220" />
             </a>
 
-            <li class="nav-item active">
-                <a class="nav-link" href="/">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{% url 'catalog' %}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g id="cart"><path d="M45.71,80.13a6.09,6.09,0,1,0,6.09,6.09A6.09,6.09,0,0,0,45.71,80.13Z"></path><path d="M73,80.13a6.09,6.09,0,1,0,6.09,6.09A6.09,6.09,0,0,0,73,80.13Z"></path><path d="M93.8,24.8a8.16,8.16,0,0,0-8-9.94H28.71L27.26,7.7H6v8H20.72l12.1,59.65H88.24v-8H39.36L38.2,61.64H85.55Z"></path></g></svg>
                     <span>Catalog</span>
                 </a>
@@ -104,29 +107,44 @@
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper" class="d-flex flex-column bg-white">
 
             <!-- Main Content -->
             <div id="content">
 
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow d-md-none">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar static-top d-lg-none justify-content-between">
 
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
+                    <div class="d-flex align-items-center mt-2">
+                        <div class="input-group align-items-center bg-light" style="border-radius: 20px;">
+                            <div class="input-group-prepend pl-3 py-2 text-gray-600">
+                                <i class="fas fa-lg fa-search"></i>
+                            </div>
+                            <input type="text" class="form-control bg-light border-0 small bg-transparent" placeholder="Search..."
+                                aria-label="Search" aria-describedby="basic-addon2" id="search-input">
+                        </div>
+                        <a class="nav-link ml-3 ml-md-5 p-0 text-gray-600 position-relative" href="#" role="button">
+                            {% comment %} <i class="fi-rr-bell"></i> {% endcomment %}
+                            <i class="far fa-bell fa-2x"></i>
+                            <span class="badge badge-pill badge-danger position-absolute d-block" style="padding: 5px; top: 0; right: 0;"></span>
+                            <!-- Counter - Alerts -->
+                        </a>
+                    </div>
                 </nav>
 
                 <!-- Begin Page Content -->
-                <div class="main-container">
+                <div class="">
 
                     <!-- Page Heading -->
-                    <div class="page-header py-5 mt-2 d-flex justify-content-between align-items-start">
-                        <div>
-                            <h1 class="main-title">My Dashboard</h1>
-                            <h5 class="sub-title">Welcome back, nice to see you again!</h5>
+                    <div class="page-header py-3 py-md-5 d-flex justify-content-between align-items-start flex-column flex-lg-row">
+                        <div class="mt-2">
+                            <h1 class="main-title">{% block page_main_title %}{% endblock %}</h1>
+                            <h5 class="sub-title">{% block page_sub_title %}{% endblock %}</h5>
                         </div>
-                        <div class="d-flex align-items-center">
+                        <div class="d-none d-lg-flex align-items-center mt-2">
                             <div class="input-group align-items-center bg-white" style="border-radius: 20px;">
                                 <div class="input-group-prepend pl-3 py-2 text-gray-600">
                                     <i class="fas fa-lg fa-search"></i>
@@ -141,6 +159,10 @@
                                 <!-- Counter - Alerts -->
                             </a>
                         </div>
+                    </div>
+
+                    <div class="main-container">
+                        {% block content %}{% endblock %}
                     </div>
                 </div>
                 <!-- /.container-fluid -->
@@ -198,6 +220,10 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+    {% block custom_js %}{% endblock %}
+
+    <script src="{% static 'js/custom.js' %}"></script>
 
 </body>
 

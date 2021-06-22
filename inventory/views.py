@@ -13,8 +13,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # import numpy as np
 # import re
 
-class GetToken(LoginRequiredMixin, TemplateView):
-    template_name = 'base.html'
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard.html'
+
+
+class CatalogView(LoginRequiredMixin, TemplateView):
+    template_name = 'catalog.html'
 
 
 @login_required
