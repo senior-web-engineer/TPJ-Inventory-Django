@@ -163,6 +163,9 @@ ACCOUNT_FORMS = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+MASONHUB_URL = 'https://app.masonhub.co/theperfectjean/api/v1'
+MASONHUB_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc'
+
 import django_heroku
 django_heroku.settings(locals())
 

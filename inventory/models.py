@@ -8,12 +8,13 @@ class Sku(models.Model):
     product_category = models.CharField(max_length=50)
     product_description = models.CharField(max_length=255)
     style = models.CharField(max_length=50)
-    color = models.CharField(max_length=50)
-    size = models.IntegerField()
+    color = models.CharField(max_length=50, blank=True)
+    size = models.CharField(max_length=50, blank=True)
     available_to_sell = models.IntegerField()
-    sales_last_week = models.IntegerField()
-    sales_last_4_weeks = models.IntegerField()
-    sales_last_52_weeks = models.IntegerField()
+    weeks_available = models.IntegerField(default=0)
+    sales_last_week = models.IntegerField(default=0)
+    sales_last_4_weeks = models.IntegerField(default=0)
+    sales_last_52_weeks = models.IntegerField(default=0)
 
 
 class Order(models.Model):
@@ -22,4 +23,4 @@ class Order(models.Model):
     order_type = models.CharField(max_length=20)
     submitted_at = models.DateTimeField()
     sku_name = models.CharField(max_length=50)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0)

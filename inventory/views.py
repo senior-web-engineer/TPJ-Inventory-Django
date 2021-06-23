@@ -5,14 +5,17 @@ import os
 from pathlib import Path
 
 import pandas as pd
+from allauth.account.decorators import login_required
 
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import JsonResponse, HttpResponse
-
-from allauth.account.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.conf import settings
+from django.db import connection
+
+from .models import Sku, Order
 
 # import numpy as np
 # import re
@@ -27,23 +30,115 @@ class CatalogView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
 
-        BASE_DIR = Path(__file__).resolve().parent.parent
-        url = f"{os.path.join(BASE_DIR, 'staticfiles')}/skus(masonhub).csv"
-        df = pd.read_csv(url)
-        data = json.loads(df.to_json(orient='records'))
+        headers = {
+            'Authorization': f'Bearer {settings.MASONHUB_TOKEN}',
+            'Content-Type': 'application/json',
+        }
 
-        for row in data:
-            if row['sales_last_4_weeks'] == '<nil>':
-                row['average_week'] = 0
-            else:
-                row['average_week'] = int(row['sales_last_4_weeks']) / 4
+        cursor = connection.cursor()
+        cursor.execute("TRUNCATE TABLE `inventory_sku`")
+
+        offset = 0
+        skus = []
+        while True:
+            url = f"{settings.MASONHUB_URL}/skus?include_counts=true&limit=100&offset={offset}"
+            response = requests.request("GET", url, headers=headers, json={})
+
+            result = response.json()['data']
+
+            for row in result:
+                color = ''
+                size = 0
+                if 'properties' in row and 'color' in row['properties']:
+                    color = row['properties']['color']
+                
+                if 'size' in row:
+                    size = row['size']
+                elif 'properties' in row and 'size' in row['properties']:
+                    size = row['properties']['size']
+
+                skus.append(Sku(sku_id=row['id'], sku_name=row['unique_sku_name'], \
+                    product_name=row['product_name'], product_category=row['product_category'], \
+                    product_description=row['product_description'], style=row['pick_style'], \
+                    color=color, size=size, \
+                    available_to_sell=row['inventory_totals']['total_available_to_sell']))
+
+            if len(result) < 100:
+                break
+
+            offset = offset + 100
             
-            if row['average_week']:
-                row['weeks_available'] = round(int(row['current_available']) / row['average_week'])
-            else:
-                row['weeks_available'] = '∞'
+        Sku.objects.bulk_create(skus)
 
-        context['data'] = data
+        # cursor = connection.cursor()
+        # cursor.execute("TRUNCATE TABLE `inventory_order`")
+
+        # offset = 0
+        # orders = []
+        # while True:
+        #     url = f"{settings.MASONHUB_URL}/orders?list_type=summary&limit=100&offset={offset}"
+        #     response = requests.request("GET", url, headers=headers, json={})
+
+        #     result = response.json()['data']
+
+        #     print(result)
+
+        #     for row in result:
+        #         if 'shipments' not in row:
+        #             break
+
+        #         for shipment in row['shipments']:
+        #             if 'shipment_line_items' in shipment:
+        #                 break
+
+        #             for item in shipment['shipment_line_items']:
+        #                 orders.append(Order(order_id=row['id'], status=shipment['status'], \
+        #                     submitted_at=shipment['shipment_date_time'], \
+        #                     sku_name=item['sku_customer_id'], quantity=item['quantity']))
+
+        #     if len(result) < 100 or offset >= 1000:
+        #         break
+
+        #     offset = offset + 100
+        
+        # API_KEY = '91dd237119c46f9fcba63327d9a1ed48'
+        # PASSWORD = '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'
+        # SHOP_NAME = 'theperfectjean.myshopify.com'
+        # VERSION = "2021-04"
+
+        # last = 0
+        # orders = []
+        # while True:
+        #     url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/orders.json?limit=250&status=any&fulfillment_status=shipped,partial&fields=id,fulfillments,created_at&since_id={last}&updated_at_min=2021-05-23"
+        #     response = requests.request("GET", url)
+
+        #     result = response.json()['orders']
+        #     last = result[-1]['id']
+
+        #     for row in result:
+        #         if 'fulfillments' not in row:
+        #             break
+
+        #         for fulfillment in row['fulfillments']:
+        #             if 'line_items' not in fulfillment:
+        #                 break
+
+        #             for item in fulfillment['line_items']:
+        #                 orders.append(Order(order_id=row['id'], \
+        #                     status=fulfillment['status'], \
+        #                     submitted_at=row['created_at'], \
+        #                     sku_name=item['sku'], quantity=item['quantity']))
+
+        #     # df=pd.DataFrame(response.json()['orders'])
+        #     # orders=pd.concat([orders, df])
+        #     # last=df['id'].iloc[-1]
+        #     # if len(df) < 250:
+        #     if len(result) < 250:
+        #         break
+        
+        # Order.objects.bulk_create(orders)
+
+        context['data'] = skus
 
         return self.render_to_response(context)
 
@@ -115,18 +210,17 @@ def create_callback():
     return
 
 
-@login_required
+# @login_required
 def shopify_orders_data(request):
     API_KEY = '91dd237119c46f9fcba63327d9a1ed48'
     PASSWORD = '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'
     SHOP_NAME = 'theperfectjean.myshopify.com'
     VERSION = "2021-04"
-    resource = "orders"
 
-    last=0
+    last = 0
     data = []
     while True:
-        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/{resource}.json?limit=250&fulfillment_status=shipped&since_id={last}"
+        url = f"https://{API_KEY}:{PASSWORD}@{SHOP_NAME}/admin/api/{VERSION}/orders.json?limit=250&status=any&fulfillment_status=shipped,partial&fields=id,fulfillments,created_at&since_id={last}&created_at_min=2021-06-01"
         response = requests.request("GET", url)
 
         result = response.json()['orders']
@@ -154,7 +248,20 @@ def import_csv(request):
 
     data = json.loads(df.to_json(orient='records'))
 
+    # BASE_DIR = Path(__file__).resolve().parent.parent
+    # url = f"{os.path.join(BASE_DIR, 'staticfiles')}/skus(masonhub).csv"
+    # df = pd.read_csv(url)
+    # data = json.loads(df.to_json(orient='records'))
+
     # for row in data:
-    #     pass
+    #     if row['sales_last_4_weeks'] == '<nil>':
+    #         row['average_week'] = 0
+    #     else:
+    #         row['average_week'] = int(row['sales_last_4_weeks']) / 4
+        
+    #     if row['average_week']:
+    #         row['weeks_available'] = round(int(row['current_available']) / row['average_week'])
+    #     else:
+    #         row['weeks_available'] = '∞'
 
     return JsonResponse(data, safe=False)
