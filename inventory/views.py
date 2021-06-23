@@ -36,7 +36,7 @@ class CatalogView(LoginRequiredMixin, TemplateView):
         }
 
         cursor = connection.cursor()
-        cursor.execute("TRUNCATE TABLE `inventory_sku`")
+        cursor.execute("TRUNCATE TABLE inventory_sku")
 
         offset = 0
         skus = []
@@ -71,35 +71,10 @@ class CatalogView(LoginRequiredMixin, TemplateView):
         Sku.objects.bulk_create(skus)
 
         # cursor = connection.cursor()
-        # cursor.execute("TRUNCATE TABLE `inventory_order`")
+        # cursor.execute("TRUNCATE TABLE inventory_order")
 
         # offset = 0
         # orders = []
-        # while True:
-        #     url = f"{settings.MASONHUB_URL}/orders?list_type=summary&limit=100&offset={offset}"
-        #     response = requests.request("GET", url, headers=headers, json={})
-
-        #     result = response.json()['data']
-
-        #     print(result)
-
-        #     for row in result:
-        #         if 'shipments' not in row:
-        #             break
-
-        #         for shipment in row['shipments']:
-        #             if 'shipment_line_items' in shipment:
-        #                 break
-
-        #             for item in shipment['shipment_line_items']:
-        #                 orders.append(Order(order_id=row['id'], status=shipment['status'], \
-        #                     submitted_at=shipment['shipment_date_time'], \
-        #                     sku_name=item['sku_customer_id'], quantity=item['quantity']))
-
-        #     if len(result) < 100 or offset >= 1000:
-        #         break
-
-        #     offset = offset + 100
         
         # API_KEY = '91dd237119c46f9fcba63327d9a1ed48'
         # PASSWORD = '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'
@@ -263,5 +238,32 @@ def import_csv(request):
     #         row['weeks_available'] = round(int(row['current_available']) / row['average_week'])
     #     else:
     #         row['weeks_available'] = '∞'
+
+
+    # while True:
+    #     url = f"{settings.MASONHUB_URL}/orders?list_type=summary&limit=100&offset={offset}"
+    #     response = requests.request("GET", url, headers=headers, json={})
+
+    #     result = response.json()['data']
+
+    #     print(result)
+
+    #     for row in result:
+    #         if 'shipments' not in row:
+    #             break
+
+    #         for shipment in row['shipments']:
+    #             if 'shipment_line_items' in shipment:
+    #                 break
+
+    #             for item in shipment['shipment_line_items']:
+    #                 orders.append(Order(order_id=row['id'], status=shipment['status'], \
+    #                     submitted_at=shipment['shipment_date_time'], \
+    #                     sku_name=item['sku_customer_id'], quantity=item['quantity']))
+
+    #     if len(result) < 100 or offset >= 1000:
+    #         break
+
+    #     offset = offset + 100
 
     return JsonResponse(data, safe=False)

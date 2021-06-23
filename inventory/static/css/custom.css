@@ -52,7 +52,7 @@ html {
 
 .sidebar .nav-item.active .nav-link {
   background-color: #006daa1a;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .bg-login-image {
@@ -219,6 +219,10 @@ html {
 @media (min-width: 992px) {
   .login-form-container {
     width: 620px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .reset-password-form-container {

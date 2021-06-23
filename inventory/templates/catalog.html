@@ -48,15 +48,11 @@
                 <td>{{ row.sku_name }}</td>
                 <td>{{ row.product_name }}</td>
                 <td>{{ row.product_category }}</td>
-                <td style="white-space: normal;">
-                {% autoescape off %}
-                    {{ row.product_description }}
-                {% endautoescape  %}
-                </td>
-                <td>{{ row.style }}</td>
-                <td>{{ row.color }}</td>
                 <td>?</td>
-                <td>{{ row.size|default_if_none:"" }}</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+                <td>{{ row.size|default:"?" }}</td>
                 <td>{{ row.available_to_sell }}</td>
                 <td>{{ row.weeks_available }}</td>
                 <td class="text-danger">RUNNING OUT</td>
@@ -71,7 +67,7 @@
                 <td>{{ row.sales_last_4_weeks|floatformat:"-3g" }}</td>
                 <td>{{ row.sales_last_52_weeks|floatformat:"-3g" }}</td>
                 <td>?</td>
-                <td>{{ row.average_week|floatformat:"0" }}</td>
+                <td>0</td>
             </tr>
             {% endfor %}
         </tbody>
