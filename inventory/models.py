@@ -11,7 +11,6 @@ class Sku(models.Model):
     color = models.CharField(max_length=50, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
     available_to_sell = models.IntegerField(default=0)
-    weeks_available = models.IntegerField(default=0)
     sales_last_week = models.IntegerField(default=0)
     sales_last_4_weeks = models.IntegerField(default=0)
     sales_last_52_weeks = models.IntegerField(default=0)
