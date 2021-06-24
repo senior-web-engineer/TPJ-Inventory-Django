@@ -237,12 +237,17 @@ def shopify_orders_data(request):
                         submitted_at=row['created_at'], \
                         sku_name=item['sku'], quantity=item['quantity']))
 
+        if len(orders) >= 1000:
+            Order.objects.bulk_create(orders)
+            orders = []
+
         if len(result) < 250:
             break
         
         last = result[-1]['id']
     
-    Order.objects.bulk_create(orders)
+    if len(orders):
+        Order.objects.bulk_create(orders)
 
     # df = pd.DataFrame(data)
     # df.to_excel('staticfiles/export.xlsx', index=False, header=True)
