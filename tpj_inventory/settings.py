@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-yr3msgn@=fy-14z4*z-d3yd*izj_qeii#ne_23x3ks@7c3sxsn'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-yr3msgn@=fy-14z4*z-d3yd*izj_qeii#ne_23x3ks@7c3sxsn')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['tpj-inventory.herokuapp.com']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -91,16 +92,32 @@ WSGI_APPLICATION = 'tpj_inventory.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'inventory',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+DATABASE_URL = os.getenv('DATABASE_URL', None)
+
+if DATABASE_URL:
+    db_info = urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'db',
+            'USER': db_info.username,
+            'PASSWORD': db_info.password,
+            'HOST': db_info.hostname,
+            'PORT': db_info.port,
+            'OPTIONS': {'sslmode': 'require'},
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'inventory',
+            'USER': 'root',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
+    }
 
 
 # Password validation
@@ -142,6 +159,7 @@ USE_TZ = True
 STATICFILES_DIRS = (os.path.join(BASE_DIR, '../staticfiles'),)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = (Path(BASE_DIR).joinpath('static'),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -166,8 +184,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 MASONHUB_URL = 'https://app.masonhub.co/theperfectjean/api/v1'
 MASONHUB_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc'
 
-import django_heroku
-django_heroku.settings(locals())
+# import django_heroku
+# django_heroku.settings(locals())
 
 try:
     from .local_settings import *
