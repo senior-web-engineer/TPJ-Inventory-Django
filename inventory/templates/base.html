@@ -127,10 +127,8 @@
                                 aria-label="Search" aria-describedby="basic-addon2" id="search-input">
                         </div>
                         <a class="nav-link ml-3 ml-md-5 p-0 text-gray-600 position-relative" href="#" role="button">
-                            {% comment %} <i class="fi-rr-bell"></i> {% endcomment %}
                             <i class="far fa-bell fa-2x"></i>
                             <span class="badge badge-pill badge-danger position-absolute d-block" style="padding: 5px; top: 0; right: 0;"></span>
-                            <!-- Counter - Alerts -->
                         </a>
                     </div>
                 </nav>
@@ -145,6 +143,9 @@
                             <h5 class="sub-title">{% block page_sub_title %}{% endblock %}</h5>
                         </div>
                         <div class="d-none d-lg-flex align-items-center mt-2">
+                            <div class="mr-5">
+                                {% block upload_button %}{% endblock %}
+                            </div>
                             <div class="input-group align-items-center bg-white" style="border-radius: 20px;">
                                 <div class="input-group-prepend pl-3 py-2 text-gray-600">
                                     <i class="fas fa-lg fa-search"></i>
@@ -153,7 +154,6 @@
                                     aria-label="Search" aria-describedby="basic-addon2" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px; box-shadow: none; width: 300px;">
                             </div>
                             <a class="nav-link ml-5 p-0 text-gray-600 position-relative" href="#" role="button">
-                                {% comment %} <i class="fi-rr-bell"></i> {% endcomment %}
                                 <i class="far fa-bell fa-2x"></i>
                                 <span class="badge badge-pill badge-danger position-absolute d-block" style="padding: 5px; top: 0; right: 0;"></span>
                                 <!-- Counter - Alerts -->
@@ -169,16 +169,6 @@
 
             </div>
             <!-- End of Main Content -->
-
-            <!-- Footer -->
-            {% comment %} <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
-                    </div>
-                </div>
-            </footer> {% endcomment %}
-            <!-- End of Footer -->
 
         </div>
         <!-- End of Content Wrapper -->

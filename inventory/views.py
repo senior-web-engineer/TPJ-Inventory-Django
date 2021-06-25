@@ -95,6 +95,10 @@ class CatalogView(LoginRequiredMixin, TemplateView):
         return self.render_to_response(context)
 
 
+class ImportA2000View(LoginRequiredMixin, TemplateView):
+    template_name = 'import_a2000.html'
+
+
 @login_required
 def get_token(request):
     pass
@@ -252,6 +256,23 @@ def shopify_orders_data(request):
     # df = pd.DataFrame(data)
     # df.to_excel('staticfiles/export.xlsx', index=False, header=True)
     return JsonResponse({})
+
+
+@login_required
+def upload_a2000(request):
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+    file_obj = request.FILES.get('file')
+
+    f = open(f"{os.path.join(BASE_DIR, 'uploads')}/{file_obj.name}", 'wb')    # The server creates and uploads a file with the same name
+    for line in file_obj.chunks():                      # Take and upload data in blocks
+        f.write(line)                                   # Write the obtained data block to the server circularly
+    f.close()
+    return JsonResponse({
+        'name': file_obj.name,
+        'size': file_obj.size,
+        'src': f'/uploads/{file_obj.name}'
+    })
 
 
 @login_required
