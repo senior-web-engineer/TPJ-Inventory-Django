@@ -185,18 +185,38 @@ def get_sku_data(request):
         for row in result:
             color = ''
             size = 0
-            if 'properties' in row and 'color' in row['properties']:
+            inseam=''
+            if 'properties' in row and 'color' in row['properties'] and row['properties']['color']:
                 color = row['properties']['color']
+            elif 'customer_color' in row and row['customer_color']:
+                color = row['customer_color']
+            elif 'vendor_color' in row and row['vendor_color']:
+                color = row['vendor_color']
             
-            if 'size' in row:
+            if 'size' in row and row['size']:
                 size = row['size']
-            elif 'properties' in row and 'size' in row['properties']:
+            elif 'properties' in row and 'size' in row['properties'] and row['properties']['size']:
                 size = row['properties']['size']
+            elif 'properties' in row and 'First Choose Your Waist:' in row['properties'] and \
+                row['properties']['First Choose Your Waist:']:
+                size = row['properties']['First Choose Your Waist:']
+
+            if 'length' in row and row['length']:
+                inseam = row['length']
+            elif 'properties' in row and 'length' in row['properties'] and \
+                row['properties']['length']:
+                inseam = row['properties']['length']
+            elif 'inseam' in row and row['inseam']:
+                inseam = row['inseam']
+            elif 'properties' in row and \
+                'That Waist is Available in these Lengths:' in row['properties'] and \
+                row['properties']['That Waist is Available in these Lengths:']:
+                inseam = row['properties']['That Waist is Available in these Lengths:']
 
             skus.append(Sku(sku_id=row['id'], sku_name=row['unique_sku_name'], \
                 product_name=row['product_name'], product_category=row['product_category'], \
                 product_description=row['product_description'], style=row['pick_style'], \
-                color=color, size=size, \
+                color=color, size=size, inseam=inseam, \
                 available_to_sell=row['inventory_totals']['total_available_to_sell']))
 
         if len(result) < 100:

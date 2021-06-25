@@ -10,6 +10,7 @@ class Sku(models.Model):
     style = models.CharField(max_length=50, blank=True, null=True)
     color = models.CharField(max_length=50, blank=True, null=True)
     size = models.CharField(max_length=50, blank=True, null=True)
+    inseam = models.CharField(max_length=50, blank=True, null=True)
     available_to_sell = models.IntegerField(default=0)
     sales_last_week = models.IntegerField(default=0)
     sales_last_4_weeks = models.IntegerField(default=0)
