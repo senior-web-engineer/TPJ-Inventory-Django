@@ -91,8 +91,9 @@ class CatalogView(LoginRequiredMixin, TemplateView):
             else:
                 row.weeks_available = '∞'
 
-        paginator = Paginator(data, 20)
         page_number = request.GET.get('page', 1)
+        per_page = request.GET.get('per_page', 20)
+        paginator = Paginator(data, per_page)
         try:
             page_obj = paginator.page(page_number)
         except PageNotAnInteger:

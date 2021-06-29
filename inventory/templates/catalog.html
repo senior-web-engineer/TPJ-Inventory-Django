@@ -13,7 +13,7 @@
         right: 0;
         font-size: 15px;
         height: 60px;
-        padding: 10px 30px;
+        padding: 10px 50px;
         align-items: center;
     }
     </style>
@@ -88,11 +88,19 @@
         </tbody>
     </table>
     <div class="pagination">
+        <span class="mr-5">
+            <select class="custom-select form-control" id="page-size">
+                <option>10</option>
+                <option selected>20</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+        </span>
         <span class="step-links">
-            <a class="btn btn-primary btn-circle {% if not data.has_previous %}disabled{% endif %}" href="?page=1">
+            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_previous %}disabled{% endif %}" href="#" data-page="1">
                 <i class="fa fa-angle-double-left"></i>
             </a>
-            <a class="btn btn-primary btn-circle {% if not data.has_previous %}disabled{% endif %}" href="?page={% if data.has_previous %}{{ data.previous_page_number }}{% endif %}">
+            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_previous %}disabled{% endif %}" href="#" data-page="{% if data.has_previous %}{{ data.previous_page_number }}{% endif %}">
                 <i class="fa fa-angle-left"></i>
             </a>
 
@@ -100,10 +108,10 @@
                 Page {{ data.number }} / {{ data.paginator.num_pages }}
             </span>
 
-            <a class="btn btn-primary btn-circle {% if not data.has_next %}disabled{% endif %}" href="?page={% if data.has_next %}{{ data.next_page_number }}{% endif %}">
+            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_next %}disabled{% endif %}" href="#" data-page="{% if data.has_next %}{{ data.next_page_number }}{% endif %}">
                 <i class="fa fa-angle-right"></i>
             </a>
-            <a class="btn btn-primary btn-circle {% if not data.has_next %}disabled{% endif %}" href="?page={{ data.paginator.num_pages }}">
+            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_next %}disabled{% endif %}" href="#" data-page="{{ data.paginator.num_pages }}">
                 <i class="fa fa-angle-double-right"></i>
             </a>
         </span>
@@ -114,4 +122,23 @@
 {% block custom_js %}
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <script>
+        $(function() {
+            var perPage = {{ data.paginator.per_page }};
+            var pageNum = {{ data.number }};
+
+            $('#page-size').val(perPage);
+
+            $('#page-size').change(function() {
+                perPage = $(this).val();
+                location.href=`?page=${pageNum}&per_page=${perPage}`;
+            });
+            
+            $('.page-link-item').click(function() {
+                pageNum = $(this).data('page');
+                location.href=`?page=${pageNum}&per_page=${perPage}`;
+                return false;
+            });
+        })
+    </script>
 {% endblock %}
