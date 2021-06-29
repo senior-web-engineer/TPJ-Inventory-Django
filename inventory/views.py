@@ -16,6 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 from django.db import connection
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Sku, Order
 
@@ -90,7 +91,16 @@ class CatalogView(LoginRequiredMixin, TemplateView):
             else:
                 row.weeks_available = '∞'
 
-        context['data'] = data
+        paginator = Paginator(data, 20)
+        page_number = request.GET.get('page', 1)
+        try:
+            page_obj = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+
+        context['data'] = page_obj
 
         return self.render_to_response(context)
 

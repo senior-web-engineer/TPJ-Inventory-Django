@@ -6,6 +6,17 @@
 
 {% block custom_css %}
     <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+    <style>
+    .pagination {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        font-size: 15px;
+        height: 60px;
+        padding: 10px 30px;
+        align-items: center;
+    }
+    </style>
 {% endblock %}
 
 {% block head_title %}{% trans "Catalog" %}{% endblock %}
@@ -76,6 +87,27 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="pagination">
+        <span class="step-links">
+            <a class="btn btn-primary btn-circle {% if not data.has_previous %}disabled{% endif %}" href="?page=1">
+                <i class="fa fa-angle-double-left"></i>
+            </a>
+            <a class="btn btn-primary btn-circle {% if not data.has_previous %}disabled{% endif %}" href="?page={% if data.has_previous %}{{ data.previous_page_number }}{% endif %}">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <span class="current mx-3">
+                Page {{ data.number }} / {{ data.paginator.num_pages }}
+            </span>
+
+            <a class="btn btn-primary btn-circle {% if not data.has_next %}disabled{% endif %}" href="?page={% if data.has_next %}{{ data.next_page_number }}{% endif %}">
+                <i class="fa fa-angle-right"></i>
+            </a>
+            <a class="btn btn-primary btn-circle {% if not data.has_next %}disabled{% endif %}" href="?page={{ data.paginator.num_pages }}">
+                <i class="fa fa-angle-double-right"></i>
+            </a>
+        </span>
+    </div>
 </div>
 {% endblock %}
 
