@@ -162,6 +162,11 @@ html {
   border-bottom: 1px solid #e3e6f0;
 }
 
+#main-container {
+  height: calc(100vh - 136px);
+  position: relative;
+}
+
 #sku-list {
   font-size: 12px;
   border-collapse: separate;
@@ -195,6 +200,10 @@ html {
 
 .fileuploader-input-button {
   background: #e74a3b !important;
+}
+
+.disabled, :disabled {
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {

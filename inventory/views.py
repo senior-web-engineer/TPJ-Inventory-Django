@@ -294,15 +294,39 @@ def upload_a2000(request):
     BASE_DIR = Path(__file__).resolve().parent.parent
 
     file_obj = request.FILES.get('file')
+    url = f"{os.path.join(BASE_DIR, 'uploads')}/{file_obj.name}"
 
-    f = open(f"{os.path.join(BASE_DIR, 'uploads')}/{file_obj.name}", 'wb')    # The server creates and uploads a file with the same name
-    for line in file_obj.chunks():                      # Take and upload data in blocks
-        f.write(line)                                   # Write the obtained data block to the server circularly
+    f = open(url, 'wb')
+    for line in file_obj.chunks():
+        f.write(line)
     f.close()
+
+    try:
+        df = pd.read_csv(url)
+    except:
+        df = pd.read_excel(url)
+    
+    request.session['a2000_url'] = url
+
     return JsonResponse({
         'name': file_obj.name,
         'size': file_obj.size,
-        'src': f'/uploads/{file_obj.name}'
+        'src': f'/uploads/{file_obj.name}',
+        'columns': df.columns.tolist()
+    })
+
+
+@login_required
+def import_a2000(request):
+    url = request.session.get('a2000_url', '')
+
+    if not url:
+        return JsonResponse({
+            'result': False
+        })
+
+    return JsonResponse({
+        'result': True
     })
 
 

@@ -24,7 +24,7 @@
 {% block page_main_title %}{% trans "Catalog" %}{% endblock %}
 
 {% block upload_button %}
-<a href="{% url 'import_a2000' %}" class="btn btn-danger btn-user" id="upload_a2000">UPLOAD A2000</a>
+<a href="{% url 'import_a2000_view' %}" class="btn btn-danger btn-user" id="upload_a2000">UPLOAD A2000</a>
 {% endblock %}
 
 {% block content %}
@@ -139,6 +139,6 @@
                 location.href=`?page=${pageNum}&per_page=${perPage}`;
                 return false;
             });
-        })
+        });
     </script>
 {% endblock %}
