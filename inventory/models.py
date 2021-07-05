@@ -15,6 +15,12 @@ class Sku(models.Model):
     sales_last_week = models.IntegerField(default=0)
     sales_last_4_weeks = models.IntegerField(default=0)
     sales_last_52_weeks = models.IntegerField(default=0)
+    eta = models.DateField(auto_now_add=True)
+    repl = models.IntegerField(default=0)
+    future_wa = models.IntegerField(default=0)
+    future_status = models.CharField(max_length=50)
+    repl2 = models.IntegerField(default=0)
+    eta2 = models.DateField(auto_now_add=True)
 
 
 class Order(models.Model):
