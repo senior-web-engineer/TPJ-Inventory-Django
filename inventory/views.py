@@ -320,10 +320,65 @@ def upload_a2000(request):
 def import_a2000(request):
     url = request.session.get('a2000_url', '')
 
-    if not url:
+    sku_column = request.POST.get('sku', '')
+    eta_column = request.POST.get('eta', '')
+    repl_column = request.POST.get('replenishment', '')
+
+    if not url or not sku_column or not eta_column or not repl_column:
         return JsonResponse({
             'result': False
         })
+
+    try:
+        df = pd.read_csv(url)
+    except:
+        df = pd.read_excel(url)
+
+    data = json.loads(df.to_json(orient='records'))
+
+    for row in data:
+        selected = Sku.objects.filter(sku_name=row[sku_column]).first()
+        if not selected:
+            break
+
+        selected.eta = datetime.fromtimestamp(row[eta_column] / 1e3)
+        selected.repl = row[repl_column]
+        today = date.today()
+        average_week = selected.sales_last_4_weeks / 4
+
+        # Get current status and available weeks
+        if average_week:
+            weeks_available = math.ceil(selected.available_to_sell / average_week)
+            if today + timedelta(days=weeks_available*7) < selected.eta:
+                current_status = 'RUNNING OUT'
+            else:
+                current_status = 'ENOUGH INV'
+        else:
+            weeks_available = '∞'
+            current_status = 'ENOUGH INV'
+        
+        # Get Future WA
+        remaining_inventory = selected.available_to_sell - average_week / 7 * (selected.eta - today)
+        selected.future_wa = (remaining_inventory + selected.repl) / average_week
+
+        # Get Future Status
+        if selected.future_wa <= 25:
+            selected.future_status = 'UNDERBOUGHT'
+        else:
+            selected.future_status = 'ENOUGH INV'
+
+        # Get Repl. New
+        selected.repl2 = (40 - selected.future_wa) * average_week
+
+        # Get Fut. Status 2
+        if selected.repl2 < 0:
+            selected.future_status2 = 'OVERBOUGHT'
+        else:
+            selected.future_status2 = 'JUST RIGHT'
+
+        selected.save()
+
+        # selected.update(eta=eta, repl=repl, current_status=current_status)
 
     return JsonResponse({
         'result': True

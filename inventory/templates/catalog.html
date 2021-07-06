@@ -47,6 +47,7 @@
                 <th>ETA</th>
                 <th>Future WA.</th>
                 <th>Future Status</th>
+                <th>Throttle</th>
                 <th>Repl. New</th>
                 <th>ETA 2</th>
                 <th>Fut. Status 2</th>
@@ -70,14 +71,17 @@
                 <td>{{ row.size|default:"?" }}</td>
                 <td>{{ row.available_to_sell }}</td>
                 <td>{{ row.weeks_available }}</td>
-                <td class="text-danger">RUNNING OUT</td>
-                <td>500</td>
-                <td>Jun 20</td>
-                <td>4</td>
-                <td class="text-danger">UNDERBOUGHT</td>
-                <td>10,000</td>
-                <td>Jul 20</td>
-                <td class="text-danger">UNDERBOUGHT</td>
+                <td class="@if (row.current_status == 'RUNNING OUT') text-danger @else text-success @endif">
+                {{ row.current_status|default:"" }}
+                </td>
+                <td>{{ row.repl }}</td>
+                <td>{{ row.eta|date:'Y-m-d' }}</td>
+                <td>{{ row.future_wa }}</td>
+                <td class="@if (row.future_status == 'UNDERBOUGHT') text-danger @else text-success @endif">{{ row.future_status|default:"" }}</td>
+                <td>?</td>
+                <td>{{ row.repl2 }}</td>
+                <td><input name="eta2" class="form-control datepicker"></td>
+                <td class="@if (row.future_status2 == 'UNDERBOUGHT') text-danger @else text-success @endif">{{ row.future_status2|default:"" }}</td>
                 <td>{{ row.sales_last_week|floatformat:"-3g" }}</td>
                 <td>{{ row.sales_last_4_weeks|floatformat:"-3g" }}</td>
                 <td>{{ row.sales_last_52_weeks|floatformat:"-3g" }}</td>

@@ -92,6 +92,12 @@
         <h3 class="col-md-6 offset-md-3 my-5">Mapping Columns</h3>
     </div>
     <div class="row">
+        <div class="col-md-2 offset-md-3">SKU</div>
+        <div class="col-md-4">
+            <select class="select2" id="sku-column"></select>
+        </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-md-2 offset-md-3">Replenishment</div>
         <div class="col-md-4">
             <select class="select2" id="replenishment-column"></select>
@@ -214,6 +220,7 @@ $(function() {
             data: {
                 replenishment: $('#replenishment-column').val(),
                 eta: $('#eta-column').val(),
+                sku: $('#sku-column').val(),
             },
             success: function(data) {
                 location.href = '/catalog';
@@ -238,13 +245,16 @@ function uploadData(formdata) {
 
             $('#replenishment-column').empty().trigger('change');
             $('#eta-column').empty().trigger('change');
+            $('#sku-column').empty().trigger('change');
             var columns = data.columns;
 
             for (column of columns) {
                 var newOption1 = new Option(column, column, true, true);
                 var newOption2 = new Option(column, column, true, true);
+                var newOption3 = new Option(column, column, true, true);
                 $('#replenishment-column').append(newOption1).trigger('change');
                 $('#eta-column').append(newOption2).trigger('change');
+                $('#sku-column').append(newOption3).trigger('change');
             }
         }
     });
