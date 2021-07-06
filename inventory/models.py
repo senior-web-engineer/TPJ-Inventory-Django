@@ -19,9 +19,10 @@ class Sku(models.Model):
     eta = models.DateField(auto_now_add=True)
     repl = models.IntegerField(default=0)
     future_wa = models.IntegerField(default=0)
-    future_status = models.CharField(max_length=50)
+    future_status = models.CharField(max_length=50, blank=True, null=True)
     repl2 = models.IntegerField(default=0)
     eta2 = models.DateField(auto_now_add=True)
+    future_status2 = models.CharField(max_length=50, blank=True, null=True)
 
 
 class Order(models.Model):
