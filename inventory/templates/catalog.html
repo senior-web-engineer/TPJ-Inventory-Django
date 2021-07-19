@@ -33,6 +33,7 @@
         <thead>
             <tr>
                 <th>Sku</th>
+                <th>UPC</th>
                 <th>Product Name</th>
                 <th>Category</th>
                 <th>Description</th>
@@ -62,6 +63,7 @@
             {% for row in data %}
             <tr>
                 <td>{{ row.sku_name }}</td>
+                <td>{{ row.upc }}</td>
                 <td>{{ row.product_name }}</td>
                 <td>{{ row.product_category }}</td>
                 <td>?</td>

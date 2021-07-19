@@ -227,7 +227,7 @@ def get_sku_data(request):
             skus.append(Sku(sku_id=row['id'], sku_name=row['unique_sku_name'], \
                 product_name=row['product_name'], product_category=row['product_category'], \
                 product_description=row['product_description'], style=row['pick_style'], \
-                color=color, size=size, inseam=inseam, \
+                color=color, size=size, inseam=inseam, upc=row['customer_bar_code'], \
                 available_to_sell=row['inventory_totals']['total_available_to_sell']))
 
         if len(result) < 100:
@@ -320,11 +320,11 @@ def upload_a2000(request):
 def import_a2000(request):
     url = request.session.get('a2000_url', '')
 
-    sku_column = request.POST.get('sku', '')
+    upc_column = request.POST.get('upc', '')
     eta_column = request.POST.get('eta', '')
     repl_column = request.POST.get('replenishment', '')
 
-    if not url or not sku_column or not eta_column or not repl_column:
+    if not url or not upc_column or not eta_column or not repl_column:
         return JsonResponse({
             'result': False
         })
@@ -337,7 +337,7 @@ def import_a2000(request):
     data = json.loads(df.to_json(orient='records'))
 
     for row in data:
-        selected = Sku.objects.filter(sku_name=row[sku_column]).first()
+        selected = Sku.objects.filter(upc=row[upc_column]).first()
         if not selected:
             break
 

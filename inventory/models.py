@@ -4,6 +4,7 @@ from django.db import models
 class Sku(models.Model):
     sku_id = models.CharField(max_length=50)
     sku_name = models.CharField(max_length=50)
+    upc = models.CharField(max_length=50, blank=True, null=True)
     product_name = models.CharField(max_length=50, blank=True, null=True)
     product_category = models.CharField(max_length=50, blank=True, null=True)
     product_description = models.CharField(max_length=255, blank=True, null=True)
