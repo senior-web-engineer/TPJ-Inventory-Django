@@ -369,7 +369,7 @@ def import_a2000(request):
         if average_week:
             selected.future_wa = (remaining_inventory + selected.repl) / average_week
         else:
-            selected.future_wa = 50
+            selected.future_wa = 500
 
         # Get Future Status
         if selected.future_wa <= 25:
