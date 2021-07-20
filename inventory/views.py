@@ -195,7 +195,7 @@ def get_sku_data(request):
 
         for row in result:
             color = ''
-            size = 0
+            # size = 0
             inseam=''
             if 'properties' in row and 'color' in row['properties'] and row['properties']['color']:
                 color = row['properties']['color']
@@ -204,13 +204,13 @@ def get_sku_data(request):
             elif 'vendor_color' in row and row['vendor_color']:
                 color = row['vendor_color']
             
-            if 'size' in row and row['size']:
-                size = row['size']
-            elif 'properties' in row and 'size' in row['properties'] and row['properties']['size']:
-                size = row['properties']['size']
-            elif 'properties' in row and 'First Choose Your Waist:' in row['properties'] and \
-                row['properties']['First Choose Your Waist:']:
-                size = row['properties']['First Choose Your Waist:']
+            # if 'size' in row and row['size']:
+            #     size = row['size']
+            # elif 'properties' in row and 'size' in row['properties'] and row['properties']['size']:
+            #     size = row['properties']['size']
+            # elif 'properties' in row and 'First Choose Your Waist:' in row['properties'] and \
+            #     row['properties']['First Choose Your Waist:']:
+            #     size = row['properties']['First Choose Your Waist:']
 
             if 'length' in row and row['length']:
                 inseam = row['length']
@@ -227,7 +227,7 @@ def get_sku_data(request):
             skus.append(Sku(sku_id=row['id'], sku_name=row['unique_sku_name'], \
                 product_name=row['product_name'], product_category=row['product_category'], \
                 product_description=row['product_description'], style=row['pick_style'], \
-                color=color, size=size, inseam=inseam, upc=row['customer_bar_code'], \
+                color=color, inseam=inseam, upc=row['customer_bar_code'], \
                 available_to_sell=row['inventory_totals']['total_available_to_sell']))
 
         if len(result) < 100:
@@ -323,8 +323,9 @@ def import_a2000(request):
     upc_column = request.POST.get('upc', '')
     eta_column = request.POST.get('eta', '')
     repl_column = request.POST.get('replenishment', '')
+    size_inseam_column = request.POST.get('size-inseam', '')
 
-    if not url or not upc_column or not eta_column or not repl_column:
+    if not url or not upc_column or not eta_column or not repl_column or not size_inseam_column:
         return JsonResponse({
             'result': False
         })
@@ -337,11 +338,16 @@ def import_a2000(request):
     data = json.loads(df.to_json(orient='records'))
 
     for row in data:
-        selected = Sku.objects.filter(upc=row[upc_column]).first()
+        selected = Sku.objects.filter(upc=str(row[upc_column])).first()
         if not selected:
-            break
+            continue
 
-        selected.eta = datetime.fromtimestamp(row[eta_column] / 1e3)
+        size_inseam = row[size_inseam_column].split('/')
+        if len(size_inseam) == 2:
+            selected.size = size_inseam[0]
+            selected.inseam = size_inseam[1]
+
+        selected.eta = date.fromtimestamp(row[eta_column] / 1e3)
         selected.repl = row[repl_column]
         today = date.today()
         average_week = selected.sales_last_4_weeks / 4
@@ -358,8 +364,12 @@ def import_a2000(request):
             current_status = 'ENOUGH INV'
         
         # Get Future WA
-        remaining_inventory = selected.available_to_sell - average_week / 7 * (selected.eta - today)
-        selected.future_wa = (remaining_inventory + selected.repl) / average_week
+        date_delta = selected.eta - today
+        remaining_inventory = selected.available_to_sell - average_week / 7 * date_delta.days
+        if average_week:
+            selected.future_wa = (remaining_inventory + selected.repl) / average_week
+        else:
+            selected.future_wa = 50
 
         # Get Future Status
         if selected.future_wa <= 25:

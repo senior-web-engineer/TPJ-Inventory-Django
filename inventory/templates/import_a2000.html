@@ -109,6 +109,12 @@
             <select class="select2" id="eta-column"></select>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col-md-2 offset-md-3">Size/Inseam</div>
+        <div class="col-md-4">
+            <select class="select2" id="size-inseam-column"></select>
+        </div>
+    </div>
 </div>
 <div class="position-absolute" id="steps-container">
     <button id="prev-upload-step" class="btn btn-secondary btn-icon-split" style="display: none;">
@@ -221,6 +227,7 @@ $(function() {
                 replenishment: $('#replenishment-column').val(),
                 eta: $('#eta-column').val(),
                 upc: $('#upc-column').val(),
+                'size-inseam': $('#size-inseam-column').val()
             },
             success: function(data) {
                 location.href = '/catalog';
@@ -246,15 +253,18 @@ function uploadData(formdata) {
             $('#replenishment-column').empty().trigger('change');
             $('#eta-column').empty().trigger('change');
             $('#upc-column').empty().trigger('change');
+            $('#size-inseam-column').empty().trigger('change');
             var columns = data.columns;
 
             for (column of columns) {
                 var newOption1 = new Option(column, column, true, true);
                 var newOption2 = new Option(column, column, true, true);
                 var newOption3 = new Option(column, column, true, true);
+                var newOption4 = new Option(column, column, true, true);
                 $('#replenishment-column').append(newOption1).trigger('change');
                 $('#eta-column').append(newOption2).trigger('change');
                 $('#upc-column').append(newOption3).trigger('change');
+                $('#size-inseam-column').append(newOption4).trigger('change');
             }
         }
     });
