@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import DashboardView, CatalogView, get_data, snapshot_ready, shopify_orders_data, \
-    import_csv, get_sku_data, ImportA2000View, upload_a2000, import_a2000
+    import_csv, get_sku_data, ImportA2000View, upload_a2000, import_a2000, sku_inventory_change, \
+    create_callback
 
 urlpatterns = [
     path('', DashboardView.as_view(), name="dashboard"),
@@ -10,6 +11,8 @@ urlpatterns = [
     path('get_sku_data/', get_sku_data),
     path('get_data/', get_data),
     path('snapshot_ready/', snapshot_ready),
+    path('sku_inventory_change/', sku_inventory_change),
+    path('create_callback/', create_callback),
     path('import_csv/', import_csv),
     path('upload_a2000/', upload_a2000, name='upload_a2000'),
     path('calc_a2000/', import_a2000, name='import_a2000'),

@@ -119,14 +119,14 @@ def get_token(request):
 def get_data(request):
     create_callback()
 
-    url = "https://app.masonhub.co/theperfectjean/api/v1/snapshot_request"
+    url = f"{settings.MASONHUB_URL}/snapshot_request"
 
     payload = {
         "snapshot_type": "full",
         "snapshot_as_of_date": "2021-08-05T08:15:30-07:00"
     }
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc',
+        'Authorization': f'Bearer {settings.MASONHUB_TOKEN}',
         'Content-Type': 'application/json',
     }
 
@@ -139,42 +139,52 @@ def get_data(request):
 # @login_required
 def snapshot_ready(request):
     json_data = json.loads(request.body.decode("utf-8"))
-    print(json_data)
     download_url = json.loads(json_data['data'])['download_url']
-    print(download_url)
 
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc',
+        'Authorization': f'Bearer {settings.MASONHUB_TOKEN}',
         'Content-Type': 'application/json',
     }
 
     response = requests.request("GET", download_url, headers=headers, json={})
-    print(response.json())
 
     return HttpResponse('')
 
 
+def sku_inventory_change(request):
+    json_data = json.loads(request.body.decode("utf-8"))
+    data = json.loads(json_data['data'])
+    for row in data:
+        if isinstance(row, str):
+            row = json.loads(row)
+
+        selected = Sku.objects.filter(sku_id=row['sku_id']).first()
+        if not selected:
+            continue
+
+        selected.available_to_sell = row['total_available_to_sell']
+        selected.save()
+
 # @login_required
-def create_callback():
-    url = "https://app.masonhub.co/theperfectjean/api/v1/callbacks"
+def create_callback(request):
+    url = f"{settings.MASONHUB_URL}/callbacks"
 
     payload = [
         {
-            "url": "https://tpj-inventory.herokuapp.com/snapshot_ready/",
-            "message_type": "snapshotReady",
+            "url": f"https://{request.get_host()}/sku_inventory_change/",
+            "message_type": "skuInventoryChange",
             "api_version": "2.0"
         }
     ]
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWNyZXRfcGhyYXNlIjoieW91IG1heSBmb3JnZXQgeW91J3JlIHdlYXJpbmcgcGFudHMiLCJzeXN0ZW1faWQiOm51bGwsImV4cCI6NDc3NjI2NDk0MywiaWF0IjoxNjIyNjY0OTQzLCJpc3MiOiJNYXNvbkh1YiJ9.zmasxOsGvRh7cWrt3CL6Wj89yg0AY8t9VNoS-UecIrc',
+        'Authorization': f'Bearer {settings.MASONHUB_TOKEN}',
         'Content-Type': 'application/json',
     }
 
     response = requests.request("POST", url, headers=headers, json=payload)
 
-    print(response.text)
+    return response
 
-    return
 
 def get_sku_data(request):
     headers = {
