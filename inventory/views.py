@@ -183,7 +183,7 @@ def create_callback(request):
 
     response = requests.request("POST", url, headers=headers, json=payload)
 
-    return response
+    return JsonResponse({})
 
 
 def get_sku_data(request):

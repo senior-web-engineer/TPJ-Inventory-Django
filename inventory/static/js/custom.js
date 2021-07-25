@@ -7,8 +7,9 @@ $(function () {
         $.ajax({
             url: '/create_callback/',
             type: 'post',
+            dataType: 'json',
             success: function(data) {
-                console.log(data);
+                alert('Success');
             }
         });
         return false;
