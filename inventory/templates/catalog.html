@@ -32,7 +32,7 @@
     <table id="sku-list" class="table">
         <thead>
             <tr>
-                <th>Sku</th>
+                <th>SKU</th>
                 <th>UPC</th>
                 <th>Product Name</th>
                 <th>Category</th>
@@ -77,12 +77,12 @@
                 {{ row.current_status|default:"" }}
                 </td>
                 <td>{{ row.repl }}</td>
-                <td>{{ row.eta|date:'Y-m-d' }}</td>
+                <td><input type="date" name="eta" class="form-control datepicker" value="{{ row.eta|date:'Y-m-d' }}"></td>
                 <td>{{ row.future_wa }}</td>
                 <td class="@if (row.future_status == 'UNDERBOUGHT') text-danger @else text-success @endif">{{ row.future_status|default:"" }}</td>
                 <td>?</td>
                 <td>{{ row.repl2 }}</td>
-                <td><input name="eta2" class="form-control datepicker"></td>
+                <td><input type="date" name="eta2" class="form-control datepicker"></td>
                 <td class="@if (row.future_status2 == 'UNDERBOUGHT') text-danger @else text-success @endif">{{ row.future_status2|default:"" }}</td>
                 <td>{{ row.sales_last_week|floatformat:"-3g" }}</td>
                 <td>{{ row.sales_last_4_weeks|floatformat:"-3g" }}</td>
@@ -97,16 +97,16 @@
         <span class="mr-5">
             <select class="custom-select form-control" id="page-size">
                 <option>10</option>
-                <option selected>20</option>
+                <option>20</option>
                 <option>50</option>
-                <option>100</option>
+                <option selected>100</option>
             </select>
         </span>
         <span class="step-links">
-            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_previous %}disabled{% endif %}" href="#" data-page="1">
+            <a class="btn btn-danger btn-user btn-circle page-link-item {% if not data.has_previous %}disabled{% endif %}" href="#" data-page="1">
                 <i class="fa fa-angle-double-left"></i>
             </a>
-            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_previous %}disabled{% endif %}" href="#" data-page="{% if data.has_previous %}{{ data.previous_page_number }}{% endif %}">
+            <a class="btn btn-danger btn-user btn-circle page-link-item {% if not data.has_previous %}disabled{% endif %}" href="#" data-page="{% if data.has_previous %}{{ data.previous_page_number }}{% endif %}">
                 <i class="fa fa-angle-left"></i>
             </a>
 
@@ -114,10 +114,10 @@
                 Page {{ data.number }} / {{ data.paginator.num_pages }}
             </span>
 
-            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_next %}disabled{% endif %}" href="#" data-page="{% if data.has_next %}{{ data.next_page_number }}{% endif %}">
+            <a class="btn btn-danger btn-user btn-circle page-link-item {% if not data.has_next %}disabled{% endif %}" href="#" data-page="{% if data.has_next %}{{ data.next_page_number }}{% endif %}">
                 <i class="fa fa-angle-right"></i>
             </a>
-            <a class="btn btn-primary btn-circle page-link-item {% if not data.has_next %}disabled{% endif %}" href="#" data-page="{{ data.paginator.num_pages }}">
+            <a class="btn btn-danger btn-user btn-circle page-link-item {% if not data.has_next %}disabled{% endif %}" href="#" data-page="{{ data.paginator.num_pages }}">
                 <i class="fa fa-angle-double-right"></i>
             </a>
         </span>

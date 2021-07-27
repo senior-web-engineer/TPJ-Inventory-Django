@@ -92,7 +92,7 @@ class CatalogView(LoginRequiredMixin, TemplateView):
                 row.weeks_available = '∞'
 
         page_number = request.GET.get('page', 1)
-        per_page = request.GET.get('per_page', 20)
+        per_page = request.GET.get('per_page', 100)
         paginator = Paginator(data, per_page)
         try:
             page_obj = paginator.page(page_number)

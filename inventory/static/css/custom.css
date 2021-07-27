@@ -147,6 +147,10 @@ html {
   margin-top: 0 !important;
 }
 
+.sidebar.toggled .nav-item span {
+  display: none !important;
+}
+
 .search-input {
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
