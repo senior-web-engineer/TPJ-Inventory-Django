@@ -366,12 +366,12 @@ def import_a2000(request):
         if average_week:
             weeks_available = math.ceil(selected.available_to_sell / average_week)
             if today + timedelta(days=weeks_available*7) < selected.eta:
-                current_status = 'RUNNING OUT'
+                selected.current_status = 'RUNNING OUT'
             else:
-                current_status = 'ENOUGH INV'
+                selected.current_status = 'ENOUGH INV'
         else:
             weeks_available = '∞'
-            current_status = 'ENOUGH INV'
+            selected.current_status = 'ENOUGH INV'
         
         # Get Future WA
         date_delta = selected.eta - today

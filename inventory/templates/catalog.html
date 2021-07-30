@@ -31,7 +31,7 @@
 <div class="table-responsive sku-table-wrapper">
     <table id="sku-list" class="table">
         <thead>
-            <tr>
+            <tr class="text-center">
                 <th>SKU</th>
                 <th>UPC</th>
                 <th>Product Name</th>
@@ -61,7 +61,7 @@
         </thead>
         <tbody>
             {% for row in data %}
-            <tr>
+            <tr class="text-center">
                 <td>{{ row.sku_name }}</td>
                 <td>{{ row.upc }}</td>
                 <td>{{ row.product_name }}</td>
@@ -73,17 +73,17 @@
                 <td>{{ row.size|default:"?" }}</td>
                 <td>{{ row.available_to_sell }}</td>
                 <td>{{ row.weeks_available }}</td>
-                <td class="@if (row.current_status == 'RUNNING OUT') text-danger @else text-success @endif">
-                {{ row.current_status|default:"" }}
+                <td class="{% if row.current_status == 'RUNNING OUT' or not row.current_status %} text-danger {% else %} text-success {% endif %}">
+                {{ row.current_status|default:"RUNNING OUT" }}
                 </td>
                 <td>{{ row.repl }}</td>
                 <td><input type="date" name="eta" class="form-control datepicker" value="{{ row.eta|date:'Y-m-d' }}"></td>
                 <td>{{ row.future_wa }}</td>
-                <td class="@if (row.future_status == 'UNDERBOUGHT') text-danger @else text-success @endif">{{ row.future_status|default:"" }}</td>
+                <td class="{% if row.future_status == 'UNDERBOUGHT' or not row.future_status %} text-danger {% else %} text-success {% endif %}">{{ row.future_status|default:"UNDERBOUGHT" }}</td>
                 <td>?</td>
                 <td>{{ row.repl2 }}</td>
                 <td><input type="date" name="eta2" class="form-control datepicker"></td>
-                <td class="@if (row.future_status2 == 'UNDERBOUGHT') text-danger @else text-success @endif">{{ row.future_status2|default:"" }}</td>
+                <td class="{% if row.future_status2 == 'OVERBOUGHT' or not row.future_status2 %} text-danger {% else %} text-success {% endif %}">{{ row.future_status2|default:"OVERBOUGHT" }}</td>
                 <td>{{ row.sales_last_week|floatformat:"-3g" }}</td>
                 <td>{{ row.sales_last_4_weeks|floatformat:"-3g" }}</td>
                 <td>{{ row.sales_last_52_weeks|floatformat:"-3g" }}</td>
