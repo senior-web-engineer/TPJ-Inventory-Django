@@ -17,6 +17,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 from django.db import connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 from .models import Sku, Order
 
@@ -82,7 +83,9 @@ class CatalogView(LoginRequiredMixin, TemplateView):
 
         # cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 52 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_52_weeks = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
-        data = Sku.objects.all()
+        search_value = request.GET.get('search_value', '').strip()
+
+        data = Sku.objects.filter(Q(sku_id__contains=search_value) | Q(sku_name__contains=search_value) | Q(upc__contains=search_value)).order_by('sku_id')
 
         for row in data:
             row.average_week = row.sales_last_4_weeks / 4
@@ -100,8 +103,11 @@ class CatalogView(LoginRequiredMixin, TemplateView):
             page_obj = paginator.page(1)
         except EmptyPage:
             page_obj = paginator.page(paginator.num_pages)
+        
+        print(search_value)
 
         context['data'] = page_obj
+        context['search_value'] = search_value
 
         return self.render_to_response(context)
 
