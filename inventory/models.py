@@ -24,6 +24,8 @@ class Sku(models.Model):
     repl2 = models.IntegerField(default=0)
     eta2 = models.DateField(auto_now_add=True)
     future_status2 = models.CharField(max_length=50, blank=True, null=True)
+    weeks_available = models.IntegerField(default=0)
+    average_week = models.IntegerField(default=0)
 
 
 class Order(models.Model):

@@ -84,15 +84,23 @@ class CatalogView(LoginRequiredMixin, TemplateView):
         # cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 52 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_52_weeks = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
         search_value = request.GET.get('search_value', '').strip()
+        sort_column = request.GET.get('sort_column', '')
+        sort_dir = request.GET.get('sort_dir', '')
 
         data = Sku.objects.filter(Q(sku_id__contains=search_value) | Q(sku_name__contains=search_value) | Q(upc__contains=search_value)).order_by('sku_id')
 
-        for row in data:
-            row.average_week = row.sales_last_4_weeks / 4
-            if row.average_week:
-                row.weeks_available = math.ceil(row.available_to_sell / row.average_week)
+        if sort_column:
+            if sort_dir == 'asc':
+                data = data.order_by(sort_column)
             else:
-                row.weeks_available = '∞'
+                data = data.order_by('-' + sort_column)
+
+        # for row in data:
+        #     row.average_week = row.sales_last_4_weeks / 4
+        #     if row.average_week:
+        #         row.weeks_available = math.ceil(row.available_to_sell / row.average_week)
+        #     else:
+        #         row.weeks_available = '∞'
 
         page_number = request.GET.get('page', 1)
         per_page = request.GET.get('per_page', 100)
@@ -104,10 +112,10 @@ class CatalogView(LoginRequiredMixin, TemplateView):
         except EmptyPage:
             page_obj = paginator.page(paginator.num_pages)
         
-        print(search_value)
-
         context['data'] = page_obj
         context['search_value'] = search_value
+        context['sort_column'] = sort_column
+        context['sort_dir'] = sort_dir
 
         return self.render_to_response(context)
 
@@ -299,6 +307,16 @@ def shopify_orders_data(request):
     
     if len(orders):
         Order.objects.bulk_create(orders)
+        
+    cursor = connection.cursor()
+
+    cursor.execute("UPDATE inventory_sku AS s SET s.sales_last_week = 0, sales_last_4_weeks = 0, sales_last_52_weeks = 0")
+
+    cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_week = i.sum_quantity WHERE s.sku_name = i.sku_name")
+
+    cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 4 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_4_weeks = i.sum_quantity, s.average_week = FLOOR(i.sum_quantity / 4), s.weeks_available = IF(i.sum_quantity = 0, 500, CEIL(s.available_to_sell / FLOOR(i.sum_quantity / 4))) WHERE s.sku_name = i.sku_name")
+
+    cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 52 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_52_weeks = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
     # df = pd.DataFrame(data)
     # df.to_excel('staticfiles/export.xlsx', index=False, header=True)

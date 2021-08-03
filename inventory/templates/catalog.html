@@ -16,6 +16,32 @@
         padding: 10px 50px;
         align-items: center;
     }
+    th.sorting {
+        padding-right: 32px !important;
+        cursor: pointer !important;
+    }
+    th.sorting::before,
+    th.sorting::after {
+        top: 13px;
+        position: absolute;
+        bottom: .9em;
+        display: block;
+        opacity: .3;
+    }
+    th.sorting::before {
+        right: 16px;
+        content: "↑";
+    }
+    th.sorting::after {
+        right: 8px;
+        content: "↓";
+    }
+    th.sorting.sorting_asc::before {
+        opacity: 1;
+    }
+    th.sorting.sorting_desc::after {
+        opacity: 1;
+    }
     </style>
 {% endblock %}
 
@@ -32,31 +58,31 @@
     <table id="sku-list" class="table">
         <thead>
             <tr class="text-center">
-                <th>SKU</th>
-                <th>UPC</th>
-                <th>Product Name</th>
-                <th>Category</th>
+                <th class="sorting" data-column="sku_name">SKU</th>
+                <th class="sorting" data-column="upc">UPC</th>
+                <th class="sorting" data-column="product_name">Product Name</th>
+                <th class="sorting" data-column="product_category">Category</th>
                 <th>Description</th>
                 <th>Style</th>
-                <th>Color</th>
-                <th>Inseam</th>
-                <th>Size</th>
-                <th>Available</th>
-                <th>Week avail.</th>
-                <th>Current Status</th>
-                <th>Replenishment</th>
-                <th>ETA</th>
-                <th>Future WA.</th>
-                <th>Future Status</th>
+                <th class="sorting" data-column="color">Color</th>
+                <th class="sorting" data-column="inseam">Inseam</th>
+                <th class="sorting" data-column="size">Size</th>
+                <th class="sorting" data-column="available_to_sell">Available</th>
+                <th class="sorting" data-column="weeks_available">Week avail.</th>
+                <th class="sorting" data-column="current_status">Current Status</th>
+                <th class="sorting" data-column="repl">Replenishment</th>
+                <th class="sorting" data-column="eta">ETA</th>
+                <th class="sorting" data-column="future_wa">Future WA.</th>
+                <th class="sorting" data-column="future_status">Future Status</th>
                 <th>Throttle</th>
-                <th>Repl. New</th>
-                <th>ETA 2</th>
-                <th>Fut. Status 2</th>
-                <th>Sales Last Wk.</th>
-                <th>Sales Last 4Wk.</th>
-                <th>Sales Last 52Wk.</th>
+                <th class="sorting" data-column="repl2">Repl. New</th>
+                <th class="sorting" data-column="eta2">ETA 2</th>
+                <th class="sorting" data-column="future_status2">Fut. Status 2</th>
+                <th class="sorting" data-column="sales_last_week">Sales Last Wk.</th>
+                <th class="sorting" data-column="sales_last_4_weeks">Sales Last 4Wk.</th>
+                <th class="sorting" data-column="sales_last_52_weeks">Sales Last 52Wk.</th>
                 <th>Sales Best Week</th>
-                <th>Sales Average Week</th>
+                <th class="sorting" data-column="sales_last_4_weeks">Sales Average Week</th>
             </tr>
         </thead>
         <tbody>
@@ -132,19 +158,24 @@
         $(function() {
             var perPage = {{ data.paginator.per_page }};
             var pageNum = {{ data.number }};
+            var sortColumn = '{{ sort_column }}';
+            var sortDir = '{{ sort_dir }}';
 
             $('#page-size').val(perPage);
+            if (sortColumn) {
+                $(`th[data-column=${sortColumn}]`).addClass(`sorting_${sortDir}`);
+            }
 
             $('#page-size').change(function() {
                 perPage = $(this).val();
                 var searchValue = $('#search-input').val();
-                location.href=`?page=${pageNum}&per_page=${perPage}&search_value=${searchValue}`;
+                location.href=`?page=${pageNum}&per_page=${perPage}&search_value=${searchValue}&sort_column=${sortColumn}&sort_dir=${sortDir}`;
             });
             
             $('.page-link-item').click(function() {
                 pageNum = $(this).data('page');
                 var searchValue = $('#search-input').val();
-                location.href=`?page=${pageNum}&per_page=${perPage}&search_value=${searchValue}`;
+                location.href=`?page=${pageNum}&per_page=${perPage}&search_value=${searchValue}&sort_column=${sortColumn}&sort_dir=${sortDir}`;
                 return false;
             });
 
@@ -153,9 +184,22 @@
             $('#search-input').keypress(function(e) {
                 if (e.keyCode == 13) {
                     var searchValue = $('#search-input').val();
-                    location.href=`?page=${pageNum}&per_page=${perPage}&search_value=${searchValue}`;
+                    location.href=`?page=${pageNum}&per_page=${perPage}&search_value=${searchValue}&sort_column=${sortColumn}&sort_dir=${sortDir}`;
                     return false;
                 }
+            });
+
+            $('th.sorting').click(function() {
+                sortColumn = $(this).data('column');
+                if ($(this).hasClass('sorting_asc')) {
+                    $(this).removeClass('sorting_asc').addClass('sorting_desc');
+                    sortDir = 'desc';
+                } else {
+                    $(this).removeClass('sorting_desc').addClass('sorting_asc');
+                    sortDir = 'asc';
+                }
+                var searchValue = $('#search-input').val();
+                location.href=`?page=${pageNum}&per_page=${perPage}&search_value=${searchValue}&sort_column=${sortColumn}&sort_dir=${sortDir}`;
             });
         });
     </script>
