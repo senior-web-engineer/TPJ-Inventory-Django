@@ -254,6 +254,10 @@ def get_sku_data(request):
                 color=color, inseam=inseam, upc=row['customer_bar_code'], \
                 available_to_sell=row['inventory_totals']['total_available_to_sell']))
 
+        if len(skus) >= 1000:
+            Sku.objects.bulk_create(skus)
+            skus = []
+            
         if len(result) < 100:
             break
 
