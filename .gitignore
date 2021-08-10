@@ -131,3 +131,5 @@ dmypy.json
 
 
 staticfiles/*.xlsx
+
+export.xlsx

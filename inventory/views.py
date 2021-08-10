@@ -125,6 +125,49 @@ class ImportA2000View(LoginRequiredMixin, TemplateView):
 
 
 @login_required
+def export_excel(request):
+    data = []
+    skus = Sku.objects.all()
+
+    for row in skus:
+        data.append({
+            'SKU': row.sku_name,
+            'UPC': row.upc,
+            'Prodcut Name': row.product_name,
+            'Category': row.product_category,
+            'Description': '',
+            'Style': '',
+            'Color': row.color,
+            'Inseam': row.inseam,
+            'Size': row.size,
+            'Avaiable': row.available_to_sell,
+            'Week avail.': row.weeks_available,
+            'Current Status': row.current_status,
+            'Replenishment': row.repl,
+            'ETA': row.eta,
+            'Future WA.': row.future_wa,
+            'Future Status': row.future_status,
+            'Throttle': '',
+            'Repl. New': row.repl2,
+            'ETA 2': '',
+            'Fut. Status 2': row.future_status2,
+            'Sales Last Wk.': row.sales_last_week,
+            'Sales Last 4Wk.': row.sales_last_4_weeks,
+            'Sales Last 52Wk.': row.sales_last_52_weeks,
+            'Sales Best Week': '',
+            'Sales Average Week': row.average_week
+        })
+
+    df = pd.DataFrame(data)
+    df.to_excel('export.xlsx', index=False, header=True)
+
+    with open('export.xlsx', 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = 'inline; filename=export.xlsx'
+        return response
+
+
+@login_required
 def get_token(request):
     pass
 
@@ -322,8 +365,6 @@ def shopify_orders_data(request):
 
     cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 52 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_52_weeks = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
-    # df = pd.DataFrame(data)
-    # df.to_excel('staticfiles/export.xlsx', index=False, header=True)
     return JsonResponse({})
 
 

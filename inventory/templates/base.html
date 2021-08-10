@@ -28,7 +28,7 @@
 
     {% block custom_css %}{% endblock %}
 
-    <link href="{% static 'css/custom.css' %}?version=20210728" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}?version=20210811" rel="stylesheet">
 
 </head>
 
@@ -117,7 +117,7 @@
                     <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <div class="d-flex align-items-center mt-2">
+                    <!-- <div class="d-flex align-items-center mt-2">
                         <div class="input-group align-items-center bg-light" style="border-radius: 20px;">
                             <div class="input-group-prepend pl-3 py-2 text-gray-600">
                                 <i class="fas fa-lg fa-search"></i>
@@ -128,7 +128,7 @@
                             <i class="far fa-bell fa-2x"></i>
                             <span class="badge badge-pill badge-danger position-absolute d-block" style="padding: 5px; top: 0; right: 0;"></span>
                         </a>
-                    </div>
+                    </div> -->
                 </nav>
 
                 <!-- Begin Page Content -->
@@ -141,9 +141,7 @@
                             <h5 class="sub-title">{% block page_sub_title %}{% endblock %}</h5>
                         </div>
                         <div class="d-none d-lg-flex align-items-center mt-2">
-                            <div class="mr-5">
-                                {% block upload_button %}{% endblock %}
-                            </div>
+                            {% block upload_button %}{% endblock %}
                             <div class="input-group align-items-center bg-white" style="border-radius: 20px;">
                                 <div class="input-group-prepend pl-3 py-2 text-gray-600">
                                     <i class="fas fa-lg fa-search"></i>
@@ -211,7 +209,7 @@
 
     {% block custom_js %}{% endblock %}
 
-    <script src="{% static 'js/custom.js?version=20210728' %}"></script>
+    <script src="{% static 'js/custom.js?version=20210811' %}"></script>
 
 </body>
 

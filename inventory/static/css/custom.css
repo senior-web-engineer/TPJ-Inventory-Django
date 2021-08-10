@@ -196,7 +196,8 @@ html {
   height: calc(100vh - 198px);
 }
 
-#upload_a2000 {
+#upload_a2000,
+#export_excel {
   width: 200px;
   border-radius: 10rem;
   padding: 5px 1rem;
