@@ -3,6 +3,7 @@ import json
 import csv
 import os
 import math
+import re
 from pathlib import Path
 from datetime import *
 
@@ -262,8 +263,6 @@ def get_sku_data(request):
 
         for row in result:
             color = ''
-            # size = 0
-            inseam=''
             if 'properties' in row and 'color' in row['properties'] and row['properties']['color']:
                 color = row['properties']['color']
             elif 'customer_color' in row and row['customer_color']:
@@ -279,22 +278,30 @@ def get_sku_data(request):
             #     row['properties']['First Choose Your Waist:']:
             #     size = row['properties']['First Choose Your Waist:']
 
-            if 'length' in row and row['length']:
-                inseam = row['length']
-            elif 'properties' in row and 'length' in row['properties'] and \
-                row['properties']['length']:
-                inseam = row['properties']['length']
-            elif 'inseam' in row and row['inseam']:
-                inseam = row['inseam']
-            elif 'properties' in row and \
-                'That Waist is Available in these Lengths:' in row['properties'] and \
-                row['properties']['That Waist is Available in these Lengths:']:
-                inseam = row['properties']['That Waist is Available in these Lengths:']
+            # if 'length' in row and row['length']:
+            #     inseam = row['length']
+            # elif 'properties' in row and 'length' in row['properties'] and \
+            #     row['properties']['length']:
+            #     inseam = row['properties']['length']
+            # elif 'inseam' in row and row['inseam']:
+            #     inseam = row['inseam']
+            # elif 'properties' in row and \
+            #     'That Waist is Available in these Lengths:' in row['properties'] and \
+            #     row['properties']['That Waist is Available in these Lengths:']:
+            #     inseam = row['properties']['That Waist is Available in these Lengths:']
+            
+            inseam = ''
+            size = ''
+
+            regex = re.compile(r'(\d{2})-(\d{2})')
+            match = regex.search(row['unique_sku_name'])
+            if match != None:
+                inseam, size = match.groups()
 
             skus.append(Sku(sku_id=row['id'], sku_name=row['unique_sku_name'], \
                 product_name=row['product_name'], product_category=row['product_category'], \
                 product_description=row['product_description'], style=row['pick_style'], \
-                color=color, inseam=inseam, upc=row['customer_bar_code'], \
+                color=color, inseam=inseam, size=size, upc=row['customer_bar_code'], \
                 available_to_sell=row['inventory_totals']['total_available_to_sell']))
 
         if len(skus) >= 1000:
@@ -361,7 +368,7 @@ def shopify_orders_data(request):
 
     cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_week = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
-    cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 4 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_4_weeks = i.sum_quantity, s.average_week = FLOOR(i.sum_quantity / 4), s.weeks_available = IF(FLOOR(i.sum_quantity / 4) = 0, 500, CEIL(s.available_to_sell / FLOOR(i.sum_quantity / 4))) WHERE s.sku_name = i.sku_name")
+    cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 4 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_4_weeks = i.sum_quantity, s.average_week = CEIL(i.sum_quantity / 4), s.weeks_available = IF(i.sum_quantity = 0, 500, ROUND(s.available_to_sell / i.sum_quantity / 4)) WHERE s.sku_name = i.sku_name")
 
     cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 52 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_52_weeks = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
@@ -433,7 +440,7 @@ def import_a2000(request):
 
         # Get current status and available weeks
         if average_week:
-            weeks_available = math.ceil(selected.available_to_sell / average_week)
+            weeks_available = math.round(selected.available_to_sell / average_week)
             if today + timedelta(days=weeks_available*7) < selected.eta:
                 selected.current_status = 'RUNNING OUT'
             else:
