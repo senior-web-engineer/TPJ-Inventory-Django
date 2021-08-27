@@ -222,6 +222,8 @@ def sku_inventory_change(request):
 
         selected.available_to_sell = row['total_available_to_sell']
         selected.save()
+    
+    return JsonResponse({})
 
 # @login_required
 def create_callback(request):
@@ -368,7 +370,7 @@ def shopify_orders_data(request):
 
     cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_week = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
-    cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 4 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_4_weeks = i.sum_quantity, s.average_week = CEIL(i.sum_quantity / 4), s.weeks_available = IF(i.sum_quantity = 0, 500, ROUND(s.available_to_sell / i.sum_quantity / 4)) WHERE s.sku_name = i.sku_name")
+    cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 4 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_4_weeks = i.sum_quantity, s.average_week = CEIL(i.sum_quantity / 4), s.weeks_available = IF(i.sum_quantity = 0, 500, ROUND(s.available_to_sell / CEIL(i.sum_quantity / 4))) WHERE s.sku_name = i.sku_name")
 
     cursor.execute("UPDATE inventory_sku AS s, (SELECT SUM(quantity) AS sum_quantity, sku_name FROM inventory_order WHERE DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) >= DATE(submitted_at) AND DATE(submitted_at) >= DATE(DATE_SUB(NOW(), INTERVAL 52 WEEK)) GROUP BY sku_name) AS i SET s.sales_last_52_weeks = i.sum_quantity WHERE s.sku_name = i.sku_name")
 
