@@ -19,6 +19,7 @@ from django.conf import settings
 from django.db import connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from requests.api import request
 
 from .models import Sku, Order
 
@@ -31,6 +32,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 class CatalogView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog.html'
+
+    # def __init__(self):
+    #     get_sku_data(request)
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -227,8 +231,9 @@ def sku_inventory_change(request):
 
 # @login_required
 def create_callback(request):
-    url = f"{settings.MASONHUB_URL}/callbacks"
-
+    
+    # url = f"{settings.MASONHUB_URL}/callbacks"
+    url = f"https://agora.masonhub.co/callbacks/theperfectjean/skuInventoryChange"
     payload = [
         {
             "url": f"https://{request.get_host()}/sku_inventory_change/",
