@@ -232,11 +232,12 @@ def sku_inventory_change(request):
 # @login_required
 def create_callback(request):
     
-    # url = f"{settings.MASONHUB_URL}/callbacks"
-    url = f"https://agora.masonhub.co/callbacks/theperfectjean/skuInventoryChange"
+    url = f"{settings.MASONHUB_URL}/callbacks"
+
     payload = [
         {
-            "url": f"https://{request.get_host()}/sku_inventory_change/",
+            # "url": f"https://{request.get_host()}/sku_inventory_change/",
+            "url": f"https://agora.masonhub.co/callbacks/theperfectjean/skuInventoryChange",
             "message_type": "skuInventoryChange",
             "api_version": "2.0"
         }
